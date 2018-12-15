@@ -109,8 +109,14 @@ public class Display {
 			break;
 		}
 		gLcd.setFont(fnt);
+		// clear the area where the text will be displayed
+		gLcd.setColor(color == COLOR_BLACK ? GraphicsLCD.WHITE : GraphicsLCD.BLACK);
+		// draw and fill the rectangle
+		gLcd.fillRect(x, y, text.length() * fnt.width, fnt.height);
+		// set text color
+		gLcd.setColor(color == COLOR_BLACK ? GraphicsLCD.BLACK : GraphicsLCD.WHITE);
 		// draw the string
-		gLcd.drawString(text, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP, color);
+		gLcd.drawString(text, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP);
 		gLcd.refresh();
 	}
 
