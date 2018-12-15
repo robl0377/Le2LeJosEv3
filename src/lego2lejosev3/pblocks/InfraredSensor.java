@@ -78,26 +78,12 @@ public class InfraredSensor {
 	}
 
 	/**
-	 * return the remote control button code.
-	 * 
-	 * @param channel the remote control channel (1..4).
-	 * @return remote control button code, one of TOP_LEFT .. RIGHT_BOTH.
-	 */
-	public int measureRemote(int channel) {
-		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
-			return sensor.getRemoteCommand(channel - 1);
-		} else {
-			throw new RuntimeException("Invalid Channel number: " + channel);
-		}
-	}
-
-	/**
 	 * Fetch and return the proximity distance from the sensor.
 	 * 
 	 * @return the the approximate distance (0..100).
 	 */
 	public float measureProximity() {
-		if (sensor.getCurrentMode() != PROXIMITY_MODE) {
+		if ((sensor.getCurrentMode() != PROXIMITY_MODE) || (sp == null)) {
 			// switch to distance mode
 			sp = sensor.getDistanceMode();
 			sample = new float[sp.sampleSize()];
@@ -112,12 +98,13 @@ public class InfraredSensor {
 	 * Fetch and return the proximity distance and the heading to the beacon.
 	 * 
 	 * @param channel the remote control channel (1..4).
-	 * @return the array of heading (-25..+25), proximity (0..100), and detected (1
-	 *         for found or 0 for not found).
+	 * @return array comprising of heading (-25..+25) in the 0th element, proximity
+	 *         (0..100) in the 1st element, and detected (1 for found or 0 for not
+	 *         found) in the 2nd element.
 	 */
 	public int[] measureBeacon(int channel) {
 		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
-			if (sensor.getCurrentMode() != BEACON_MODE) {
+			if ((sensor.getCurrentMode() != BEACON_MODE) || (sp == null)) {
 				// switch to beacon mode
 				sp = sensor.getSeekMode();
 				sample = new float[sp.sampleSize()];
@@ -126,14 +113,28 @@ public class InfraredSensor {
 				// Thread.sleep(SWITCHDELAY);
 			}
 			sp.fetchSample(sample, 0);
-			seek[0] = (int)sample[channel - 1];
-			seek[1] = (int)sample[channel];
+			seek[0] = (int) sample[channel - 1];
+			seek[1] = (int) sample[channel];
 			if (seek[1] > 100) {
 				seek[1] = 100;
 			}
 			seek[2] = (sample[channel] == Float.POSITIVE_INFINITY) ? 0 : 1;
 			return seek;
 
+		} else {
+			throw new RuntimeException("Invalid Channel number: " + channel);
+		}
+	}
+
+	/**
+	 * return the remote control button code.
+	 * 
+	 * @param channel the remote control channel (1..4).
+	 * @return remote control button code, one of TOP_LEFT .. RIGHT_BOTH.
+	 */
+	public int measureRemote(int channel) {
+		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
+			return sensor.getRemoteCommand(channel - 1);
 		} else {
 			throw new RuntimeException("Invalid Channel number: " + channel);
 		}
