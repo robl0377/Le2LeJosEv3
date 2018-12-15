@@ -46,6 +46,10 @@ public class SoundNote {
 			Sound.playNote(note, 0.12F, 80, Sound.WAIT);
 			log.fine("Playing done");
 			Utl.waitTime(0.06F);
+
+			if (Button.ESCAPE.isDown()) {
+				break;
+			}
 		}
 
 		// Wait until button press
@@ -82,6 +86,14 @@ public class SoundNote {
 					log.fine("Playing done");
 					Utl.waitTime(0.1F);
 				}
+
+				if (Button.ESCAPE.isDown()) {
+					break;
+				}
+			}
+
+			if (Button.ESCAPE.isDown()) {
+				break;
 			}
 
 			// Wait until button press
