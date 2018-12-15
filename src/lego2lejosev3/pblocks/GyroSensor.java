@@ -54,7 +54,7 @@ public class GyroSensor {
 	 * @return the rotation rate in degrees/second.
 	 */
 	public float measureRate() {
-		if (sensor.getCurrentMode() != RATE_MODE) {
+		if ((sensor.getCurrentMode() != RATE_MODE) || (sp == null)) {
 			// switch to rate mode
 			sp = sensor.getRateMode();
 			sample = new float[sp.sampleSize()];
@@ -72,7 +72,7 @@ public class GyroSensor {
 	 * @return the rotation angle in degrees.
 	 */
 	public float measureAngle() {
-		if (sensor.getCurrentMode() != ANGLE_MODE) {
+		if ((sensor.getCurrentMode() != ANGLE_MODE) || (sp == null)) {
 			// switch to angle mode
 			sp = sensor.getAngleMode();
 			sample = new float[sp.sampleSize()];
@@ -87,11 +87,11 @@ public class GyroSensor {
 	/**
 	 * Fetch and return the rotation angle and rate from the sensor.
 	 * 
-	 * @return array comprising the rotation ratein degrees/second and the angle in
-	 *         degrees.
+	 * @return array comprising the rotation rate in degrees/second in the 0th
+	 *         element and the angle in degrees in the 1st element.
 	 */
 	public float[] measureAngleRate() {
-		if (sensor.getCurrentMode() != ANGLE_RATE_MODE) {
+		if ((sensor.getCurrentMode() != ANGLE_RATE_MODE) || (sp == null)) {
 			// switch to angle and rate mode
 			sp = sensor.getAngleAndRateMode();
 			sample = new float[sp.sampleSize()];
