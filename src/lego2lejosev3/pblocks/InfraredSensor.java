@@ -1,10 +1,12 @@
 /**
- * LeJOS Implementation of LEGO Mindstorms Programming Blocks
+ * Java Implementation of LEGO Mindstorms Programming Blocks
  */
 package lego2lejosev3.pblocks;
 
+import java.util.logging.Logger;
+
+import lejos.hardware.Button;
 import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.SampleProvider;
 
 /**
@@ -14,7 +16,9 @@ import lejos.robotics.SampleProvider;
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FInfraredSensor.html
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=editor%2FUsingSensors_Remote.html
  */
-public class InfraredSensor {
+public class InfraredSensor implements Change {
+
+	private static final Logger log = Logger.getLogger(InfraredSensor.class.getName());
 
 	/** the remote control button codes */
 	public static final int NONE = 0; // 0 = No button (and Beacon Mode is off)
@@ -80,7 +84,8 @@ public class InfraredSensor {
 	/**
 	 * Fetch and return the proximity distance from the sensor.
 	 * 
-	 * @return the the approximate distance (0..100).
+	 * @return the the approximate distance (0..100). However, LeJOS returns 0..55
+	 *         only.
 	 */
 	public float measureProximity() {
 		if ((sensor.getCurrentMode() != PROXIMITY_MODE) || (sp == null)) {
@@ -140,4 +145,53 @@ public class InfraredSensor {
 		}
 	}
 
+	/**
+	 * Wait for Change of Infrared Proximity.
+	 * 
+	 * @param direction the change direction, one of CHANGE_INCREASE,
+	 *                  CHANGE_DECREASE, CHANGE_ANY.
+	 * @param amount    the amount of change (> 0).
+	 * @return the current proximity value after the change.
+	 */
+	public float waitChangeProximity(int direction, float amount) {
+		if ((direction == CHANGE_INCREASE) || (direction == CHANGE_DECREASE) || (direction == CHANGE_ANY)) {
+			// get initial proximity
+			float iniVal = measureProximity();
+			log.fine("iniVal: " + iniVal);
+			float curVal = iniVal;
+			boolean change = false;
+			while (Button.ESCAPE.isUp()) {
+				// short delay until next sample
+				try {
+					Thread.sleep(1L);
+				} catch (InterruptedException e) {
+					// leave loop
+					break;
+				}
+				// get current state of sensor
+				curVal = measureProximity();
+				// compare
+				switch (direction) {
+				case CHANGE_INCREASE:
+					change = (curVal >= (iniVal + amount));
+					break;
+				case CHANGE_DECREASE:
+					change = (curVal <= (iniVal - amount));
+					break;
+				case CHANGE_ANY:
+					change = ((curVal >= (iniVal + amount)) || (curVal <= (iniVal - amount)));
+					break;
+				}
+				log.fine("curVal: " + curVal + ", change: " + change);
+				// leave wait loop if change occurred
+				if (change) {
+					break;
+				}
+			}
+			return curVal;
+
+		} else {
+			throw new RuntimeException("Invalid Change direction: " + direction);
+		}
+	}
 }

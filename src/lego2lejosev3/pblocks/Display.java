@@ -1,5 +1,5 @@
 /**
- * LeJOS Implementation of LEGO Mindstorms Programming Blocks
+ * Java Implementation of LEGO Mindstorms Programming Blocks
  */
 package lego2lejosev3.pblocks;
 
@@ -35,6 +35,7 @@ public class Display {
 	public static final boolean COLOR_BLACK = false;
 	public static final boolean COLOR_WHITE = true;
 
+	// the LCD instance
 	// private static final TextLCD tLcd = BrickFinder.getDefault().getTextLCD();
 	private static final GraphicsLCD gLcd = LocalEV3.get().getGraphicsLCD();
 
@@ -313,8 +314,9 @@ public class Display {
 				gLcd.drawImage(img, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP);
 
 			} catch (ArrayIndexOutOfBoundsException ie) {
-				log.log(Level.WARNING,
-						"Error displaying image file " + imageFile.getAbsolutePath() + ": " + ie.toString());
+				// ignore that
+				//log.log(Level.WARNING,
+				//		"Error displaying image file " + imageFile.getAbsolutePath() + ": " + ie.toString());
 
 			} catch (Exception ex) {
 				log.log(Level.WARNING,

@@ -1,5 +1,5 @@
 /**
- * LeJOS Implementation of LEGO Mindstorms Programming Blocks
+ * Java Implementation of LEGO Mindstorms Programming Blocks
  */
 package lego2lejosev3.pblocks;
 
@@ -88,7 +88,7 @@ public class MoveSteering {
 			leftMotor.forward();
 			rightMotor.forward();
 			// wait time in seconds
-			Utl.waitTime(period);
+			Wait.time(period);
 			// switch motors off
 			motorsOff(brake);
 		}

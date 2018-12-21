@@ -1,5 +1,5 @@
 /**
- * LeJOS Implementation of LEGO Mindstorms Programming Blocks
+ * Java Implementation of LEGO Mindstorms Programming Blocks
  */
 package lego2lejosev3.logging;
 
