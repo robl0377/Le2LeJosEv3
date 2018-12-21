@@ -15,7 +15,3 @@ I plan to build further robots and port their LEGO icon-based programs to LeJOS 
 ## How To Use
 If you want to use the _LEGO 2 LeJOS EV3_ Library in your own LeJOS EV3 project, just copy the classes in the packages
 _lego2lejosev3.pblocks_ and _lego2lejosev3.logging_ into your project.
-
-## Projects
-The following projects - which I am aware of - use the _LEGO 2 LeJOS EV3_ Library:
-- Lego2LeJosEv3-Gripp3r (see https://github.com/robl0377/Lego2LeJosEv3-Gripp3r)
