@@ -19,3 +19,4 @@ _lego2lejosev3.pblocks_ and _lego2lejosev3.logging_ into your project.
 ## Projects
 The following projects - which I am aware of - use the _LEGO 2 LeJOS EV3_ Library:
 - Lego2LeJosEv3-Gripp3r (see https://github.com/robl0377/Lego2LeJosEv3-Gripp3r)
+- Lego2LeJosEv3-Wack3m (see https://github.com/robl0377/Lego2LeJosEv3-Wack3m)
