@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import lego2lejosev3.logging.Setup;
 import lego2lejosev3.pblocks.Display;
 import lego2lejosev3.pblocks.Sound;
-import lego2lejosev3.pblocks.Utl;
+import lego2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 
 /**
@@ -16,9 +16,9 @@ import lejos.hardware.Button;
  * 
  * @author Roland Blochberger
  */
-public class SoundNote {
+public class SoundNoteTest {
 
-	private static Class<?> clazz = SoundNote.class;
+	private static Class<?> clazz = SoundNoteTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	/**
@@ -45,7 +45,7 @@ public class SoundNote {
 			log.fine("Playing " + note);
 			Sound.playNote(note, 0.12F, 80, Sound.WAIT);
 			log.fine("Playing done");
-			Utl.waitTime(0.06F);
+			Wait.time(0.06F);
 
 			if (Button.ESCAPE.isDown()) {
 				break;
@@ -84,7 +84,7 @@ public class SoundNote {
 					log.fine("Playing " + name + ": " + note);
 					Sound.playNote(instrument, note, 0.3F);
 					log.fine("Playing done");
-					Utl.waitTime(0.1F);
+					Wait.time(0.1F);
 				}
 
 				if (Button.ESCAPE.isDown()) {

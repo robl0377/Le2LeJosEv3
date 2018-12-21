@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import lego2lejosev3.logging.Setup;
 import lego2lejosev3.pblocks.Display;
 import lego2lejosev3.pblocks.InfraredSensor;
-import lego2lejosev3.pblocks.Utl;
+import lego2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
@@ -58,7 +58,7 @@ public class InfraredTest {
 			Display.textGrid("Prox: " + prox + "         ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -68,7 +68,7 @@ public class InfraredTest {
 		// -----------------------------------------------
 		// infrared beacon display
 		Display.textGrid("Infrared Sensor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		Display.textGrid("Beacon:", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("Beacon: Ch " + REMOTE_CHANNEL, false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press ENTER", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		int[] beac = new int[3];
@@ -81,7 +81,7 @@ public class InfraredTest {
 			Display.textGrid("Det.: " + beac[2] + "      ", false, 0, 5, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -91,7 +91,7 @@ public class InfraredTest {
 		// -----------------------------------------------
 		// infrared remote display
 		Display.textGrid("Infrared Sensor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		Display.textGrid("Remote:", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("Remote: Ch " + REMOTE_CHANNEL, false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press ENTER", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		int rbutton = 0;
@@ -108,7 +108,11 @@ public class InfraredTest {
 			Display.textGrid(rbname + "                  ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.01F);
+			Wait.time(0.01F);
+		}
+		// wait until button is released again
+		while (Button.ENTER.isDown()) {
+			Thread.yield();
 		}
 
 		log.fine("The End");

@@ -12,9 +12,9 @@ import lego2lejosev3.logging.Setup;
  * 
  * @author Roland Blochberger
  */
-public class TestMathSpeed {
+public class MathSpeedTest {
 
-	private static Class<?> clazz = TestMathSpeed.class;
+	private static Class<?> clazz = MathSpeedTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 	
 	// number of values to use

@@ -12,13 +12,13 @@ import lego2lejosev3.pblocks.Display;
 import lejos.hardware.Button;
 
 /**
- * Test for playing a file.
+ * Test for displaying an image file.
  * 
  * @author Roland Blochberger
  */
-public class DisplayImage {
+public class DisplayImageTest {
 
-	private static Class<?> clazz = DisplayImage.class;
+	private static Class<?> clazz = DisplayImageTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	/**
@@ -30,6 +30,7 @@ public class DisplayImage {
 		// setup logging to file
 		Setup.log2File(clazz);
 		log.fine("Starting ...");
+
 		// determine which image files are there
 		File imgDir = new File(Display.IMAGE_DIR);
 		String[] imageFiles = imgDir.list(new FilenameFilter() {

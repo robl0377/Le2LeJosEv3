@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import lego2lejosev3.logging.Setup;
 import lego2lejosev3.pblocks.Display;
 import lego2lejosev3.pblocks.GyroSensor;
-import lego2lejosev3.pblocks.Utl;
+import lego2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
@@ -54,7 +54,7 @@ public class GyroTest {
 			Display.textGrid("Rate: " + value[0] + "   ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -69,7 +69,7 @@ public class GyroTest {
 			Display.textGrid("Angle: " + value[0] + "   ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -85,7 +85,7 @@ public class GyroTest {
 			Display.textGrid("Angle: " + value[1] + "   ", false, 0, 4, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {

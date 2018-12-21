@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import lego2lejosev3.logging.Setup;
 import lego2lejosev3.pblocks.Display;
 import lego2lejosev3.pblocks.Sound;
-import lego2lejosev3.pblocks.Utl;
+import lego2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 
 /**
@@ -43,12 +43,12 @@ public class SoundTest {
 			log.fine("Playing " + freq + "Hz");
 			Sound.playTone(freq, 0.12F, 80, Sound.WAIT);
 			log.fine("Playing done");
-			Utl.waitTime(0.06F);
+			Wait.time(0.06F);
 		}
 
 		// Wait until button press
 		Button.waitForAnyPress();
-		
+
 		// -----------------------------------------------
 		// play tone in background until keypress
 		int freq = 440;
@@ -63,7 +63,7 @@ public class SoundTest {
 
 		// Wait until button press
 		Button.waitForAnyPress();
-		
+
 		// Stop tone
 		Sound.stop();
 
@@ -82,7 +82,7 @@ public class SoundTest {
 
 		// Wait until button press
 		Button.waitForAnyPress();
-		
+
 		// Stop tone
 		Sound.stop();
 

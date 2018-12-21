@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import lego2lejosev3.logging.Setup;
 import lego2lejosev3.pblocks.Display;
 import lego2lejosev3.pblocks.TouchSensor;
-import lego2lejosev3.pblocks.Utl;
+import lego2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
@@ -42,7 +42,7 @@ public class TouchTest {
 		Display.textGrid("Touch Sensor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Status", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press ENTER", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		
+
 		// -----------------------------------------------
 		// touch status
 		boolean value = false;
@@ -53,7 +53,7 @@ public class TouchTest {
 			Display.textGrid("Touch: " + value + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -70,7 +70,7 @@ public class TouchTest {
 			Display.textGrid("Status: " + status + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 
 		// wait until button is released again
@@ -87,7 +87,7 @@ public class TouchTest {
 			Display.textGrid("Status: " + status + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Utl.waitTime(0.1F);
+			Wait.time(0.1F);
 		}
 
 		log.fine("The End");

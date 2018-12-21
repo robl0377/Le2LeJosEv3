@@ -17,9 +17,9 @@ import lejos.hardware.Button;
  * 
  * @author Roland Blochberger
  */
-public class SoundFile {
+public class SoundFileTest {
 
-	private static Class<?> clazz = SoundFile.class;
+	private static Class<?> clazz = SoundFileTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	/**
