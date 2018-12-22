@@ -1,13 +1,13 @@
 /**
  * 
  */
-package lego2lejosev3.tests;
+package le2lejosev3.tests;
 
 import java.util.logging.Logger;
 
-import lego2lejosev3.logging.Setup;
-import lego2lejosev3.pblocks.Timer;
-import lego2lejosev3.pblocks.Wait;
+import le2lejosev3.logging.Setup;
+import le2lejosev3.pblocks.Timer;
+import le2lejosev3.pblocks.Wait;
 
 /**
  * Test for the Timer and Wait blocks.

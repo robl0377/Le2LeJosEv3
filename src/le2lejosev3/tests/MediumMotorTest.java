@@ -1,30 +1,30 @@
 /**
  * 
  */
-package lego2lejosev3.tests;
+package le2lejosev3.tests;
 
 import java.util.logging.Logger;
 
-import lego2lejosev3.logging.Setup;
-import lego2lejosev3.pblocks.Display;
-import lego2lejosev3.pblocks.LargeMotor;
-import lego2lejosev3.pblocks.Wait;
+import le2lejosev3.logging.Setup;
+import le2lejosev3.pblocks.Display;
+import le2lejosev3.pblocks.MediumMotor;
+import le2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 
 /**
- * Test for the large motor.
+ * Test for the medium motor.
  * NOTE: Be sure the motor can run freely.
  * 
  * @author Roland Blochberger
  */
-public class LargeMotorTest {
+public class MediumMotorTest {
 
-	private static Class<?> clazz = LargeMotorTest.class;
+	private static Class<?> clazz = MediumMotorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port largeMotorPort = MotorPort.B;
+	static final Port gripMotorPort = MotorPort.A;
 
 	/**
 	 * Main program entry point.
@@ -37,11 +37,11 @@ public class LargeMotorTest {
 		log.fine("Starting ...");
 
 		// instantiate the motor
-		LargeMotor mot = new LargeMotor(largeMotorPort);
-		log.fine("Created Large Motor at Port " + mot.getPortName());
+		MediumMotor mot = new MediumMotor(gripMotorPort);
+		log.fine("Created Medium Motor at Port " + mot.getPortName());
 
 		// -----------------------------------------------
-		Display.textGrid("Large Motor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("Medium Motor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		// run motor backward for 0.9 seconds and brake afterward

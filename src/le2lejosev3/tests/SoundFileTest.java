@@ -1,15 +1,15 @@
 /**
  * 
  */
-package lego2lejosev3.tests;
+package le2lejosev3.tests;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.logging.Logger;
 
-import lego2lejosev3.logging.Setup;
-import lego2lejosev3.pblocks.Display;
-import lego2lejosev3.pblocks.Sound;
+import le2lejosev3.logging.Setup;
+import le2lejosev3.pblocks.Display;
+import le2lejosev3.pblocks.Sound;
 import lejos.hardware.Button;
 
 /**

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package lego2lejosev3.tests;
+package le2lejosev3.tests;
 
 import java.util.logging.Logger;
 
-import lego2lejosev3.logging.Setup;
-import lego2lejosev3.pblocks.Display;
-import lego2lejosev3.pblocks.TouchSensor;
-import lego2lejosev3.pblocks.Wait;
+import le2lejosev3.logging.Setup;
+import le2lejosev3.pblocks.Display;
+import le2lejosev3.pblocks.TouchSensor;
+import le2lejosev3.pblocks.Wait;
 import lejos.hardware.Button;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;

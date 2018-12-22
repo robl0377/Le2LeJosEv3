@@ -1,11 +1,11 @@
 /**
  * 
  */
-package lego2lejosev3.tests;
+package le2lejosev3.tests;
 
 import java.util.logging.Logger;
 
-import lego2lejosev3.logging.Setup;
+import le2lejosev3.logging.Setup;
 
 /**
  * Test the float and double arithmetic speed.
