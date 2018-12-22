@@ -1,7 +1,7 @@
 /**
  * Java Implementation of LEGO Mindstorms Programming Blocks
  */
-package lego2lejosev3.pblocks;
+package le2lejosev3.pblocks;
 
 import lejos.hardware.Button;
 import lejos.hardware.port.Port;

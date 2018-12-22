@@ -1,7 +1,7 @@
 /**
  * Java Implementation of LEGO Mindstorms Programming Blocks
  */
-package lego2lejosev3.pblocks;
+package le2lejosev3.pblocks;
 
 import java.io.File;
 import java.util.logging.Logger;
