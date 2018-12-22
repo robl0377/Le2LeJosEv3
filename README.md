@@ -19,8 +19,8 @@ _le2lejosev3.pblocks_ and _le2lejosev3.logging_ into your project.
 
 ## Projects
 The following projects - which I am aware of - use the _Le2LeJosEv3_ Library:
-- Le2LeJosEv3-Gripp3r (see https://github.com/robl0377/Lego2LeJosEv3-Gripp3r)
-- Le2LeJosEv3-Wack3m (see https://github.com/robl0377/Lego2LeJosEv3-Wack3m)
+- Le2LeJosEv3-Gripp3r (see https://github.com/robl0377/Le2LeJosEv3-Gripp3r)
+- Le2LeJosEv3-Wack3m (see https://github.com/robl0377/Le2LeJosEv3-Wack3m)
 
 
 ---
