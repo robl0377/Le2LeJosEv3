@@ -37,7 +37,8 @@ public class DisplayImageTest {
 			@Override
 			public boolean accept(File dir, String name) {
 				log.fine("found file " + dir.getAbsolutePath() + File.separator + name);
-				return name.toLowerCase().endsWith(".lni");
+				return name.toLowerCase().endsWith(".lni") || name.toLowerCase().endsWith(".rgf");
+				// XXX LeJOS cannot display .rgf files !!
 			}
 		});
 		if (imageFiles == null || imageFiles.length == 0) {
