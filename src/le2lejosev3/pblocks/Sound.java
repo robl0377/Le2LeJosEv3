@@ -30,6 +30,8 @@ public class Sound {
 
 	/** the base directory for sound files on the EV3 brick. */
 	public static final String SOUND_DIR = "/home/lejos/lib/";
+	/** the default extension for sound files that LeJOS can play */
+	public static final String DEFAULT_EXT = "wav";
 
 	// array with allowed note names
 	public static final String[] noteNames = new String[] { "B6", "A#6", "A6", "G#6", "G6", "F#6", "F6", "E6", "D#6",
@@ -53,11 +55,15 @@ public class Sound {
 	 * (by SCP) to the SOUND_DIR directory before using this programming block.
 	 * The sound file must be mono, from 8kHz to 48kHz, and 8-bit or 16-bit PWM.
 	 * 
-	 * @param filename the file name only.
+	 * @param filename the file name only; you can omit the DEFAULT_EXT.
 	 * @param volume   the volume (0..100).
 	 * @param playType the play type, one of WAIT, ONCE, or REPEAT.
 	 */
 	public static void playFile(String filename, int volume, int playType) {
+		if (filename.lastIndexOf('.') <= 0) {
+			// no extension found: append the default sound file extension
+			filename = filename + '.' + DEFAULT_EXT;
+		}
 		File soundFile = new File(SOUND_DIR, filename);
 		if (soundFile.canRead()) {
 			switch (playType) {

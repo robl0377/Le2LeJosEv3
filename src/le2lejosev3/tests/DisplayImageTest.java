@@ -48,6 +48,10 @@ public class DisplayImageTest {
 
 			for (String imageFile : imageFiles) {
 
+				if (imageFile.endsWith(".lni")) {
+					// this is the standard extension, omit it
+					imageFile = imageFile.substring(0, imageFile.lastIndexOf('.'));
+				}
 				// display image file on top left corner
 				log.fine("Display image " + imageFile);
 				Display.image(imageFile, true, 0, 0);

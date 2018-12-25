@@ -69,7 +69,7 @@ public class SoundTest {
 
 		// -----------------------------------------------
 		// play sound file in background until keypress
-		String soundFile = "airhiss2.wav";
+		String soundFile = "airhiss2";
 		// display filename and hint
 		Display.textGrid("Playing:", true, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid(soundFile, false, 2, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);

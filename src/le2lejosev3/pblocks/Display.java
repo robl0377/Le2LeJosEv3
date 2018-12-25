@@ -41,6 +41,8 @@ public class Display {
 
 	/** the base directory for image files on the EV3 brick. */
 	public static final String IMAGE_DIR = "/home/lejos/lib/";
+	/** the default extension for image files that LeJOS can show */
+	public static final String DEFAULT_EXT = "lni";
 
 	/**
 	 * Display a number on the pixel display.
@@ -291,7 +293,7 @@ public class Display {
 	 * Note: The image file must already reside on the EV3 brick. Please upload it
 	 * (by SCP) to the IMAGE_DIR directory before using this programming block.
 	 * 
-	 * @param filename the file name only.
+	 * @param filename the file name only; you can omit the DEFAULT_EXT.
 	 * @param clrScr   set true to clear the screen before drawing; false to leave
 	 *                 the screen as is.
 	 * @param x        the x coordinate of the upper left corner of the image
@@ -300,6 +302,10 @@ public class Display {
 	 *                 (0..127, 0 = upper edge of the LCD).
 	 */
 	public static void image(String filename, boolean clrScr, int x, int y) {
+		if (filename.lastIndexOf('.') <= 0) {
+			// no extension found: append the default sound file extension
+			filename = filename + '.' + DEFAULT_EXT;
+		}
 		File imageFile = new File(IMAGE_DIR, filename);
 		if (imageFile.canRead()) {
 			// read the file into an image
