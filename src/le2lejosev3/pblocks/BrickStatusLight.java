@@ -3,6 +3,7 @@
  */
 package le2lejosev3.pblocks;
 
+//import java.util.logging.Level;
 //import java.util.logging.Logger;
 
 import lejos.hardware.LED;
@@ -36,7 +37,9 @@ public class BrickStatusLight {
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
 					// turn the light and any blinking off
-					// log.fine("off");
+					// if (log.isLoggable(Level.FINEST)) {
+					// log.finest("off");
+					// }
 					led.setPattern(0);
 				}
 			}));
@@ -59,7 +62,9 @@ public class BrickStatusLight {
 	 * Turn the Brick Status Light off.
 	 */
 	public static void off() {
+		// if (log.isLoggable(Level.FINEST)) {
 		// log.fine("off");
+		// }
 		led.setPattern(0);
 	}
 
@@ -97,7 +102,9 @@ public class BrickStatusLight {
 			pattern += 3; // 3 * EV3LED.PATTERN_BLINK
 			// pattern += 6; // 3 * EV3LED.PATTERN_HEARTBEAT
 		}
-		// log.fine("on pattern: " + Integer.toBinaryString(pattern));
+		// if (log.isLoggable(Level.FINEST)) {
+		// log.finest("on pattern: " + Integer.toBinaryString(pattern));
+		// }
 		return pattern;
 	}
 

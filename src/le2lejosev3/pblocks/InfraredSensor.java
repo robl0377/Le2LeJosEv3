@@ -3,6 +3,7 @@
  */
 package le2lejosev3.pblocks;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lejos.hardware.Button;
@@ -21,18 +22,18 @@ public class InfraredSensor implements Change {
 	private static final Logger log = Logger.getLogger(InfraredSensor.class.getName());
 
 	/** the remote control button codes */
-	public static final int NONE = 0; // 0 = No button (and Beacon Mode is off)
-	public static final int TOP_LEFT = 1; // Button 1
-	public static final int BOTTOM_LEFT = 2; // Button 2
-	public static final int TOP_RIGHT = 3; // Button 3
-	public static final int BOTTOM_RIGHT = 4; // Button 4
-	public static final int TOP_BOTH = 5; // Both Button 1 and Button 3
-	public static final int TOP_LEFT_BOTTOM_RIGHT = 6; // Both Button 1 and Button 4
-	public static final int TOP_RIGHT_BOTTOM_LEFT = 7; // Both Button 2 and Button 3
-	public static final int BOTTOM_BOTH = 8; // Both Button 2 and Button 4
+	public static final int NONE = 0; // 0 = No Command Button (and Beacon Mode is off)
+	public static final int TOP_LEFT = 1; // Command Button 1
+	public static final int BOTTOM_LEFT = 2; // Command Button 2
+	public static final int TOP_RIGHT = 3; // Command Button 3
+	public static final int BOTTOM_RIGHT = 4; // Command Button 4
+	public static final int TOP_BOTH = 5; // Both Command Button 1 and Command Button 3
+	public static final int TOP_LEFT_BOTTOM_RIGHT = 6; // Both Command Button 1 and Command Button 4
+	public static final int TOP_RIGHT_BOTTOM_LEFT = 7; // Both Command Button 2 and Command Button 3
+	public static final int BOTTOM_BOTH = 8; // Both Command Button 2 and Command Button 4
 	public static final int BEACON = 9; // Beacon Mode is on
-	public static final int LEFT_BOTH = 10; // Both Button 1 and Button 2
-	public static final int RIGHT_BOTH = 11; // Both Button 3 and Button 4
+	public static final int LEFT_BOTH = 10; // Both Command Button 1 and Command Button 2
+	public static final int RIGHT_BOTH = 11; // Both Command Button 3 and Command Button 4
 	/*
 	 * LeJOS Button codes:
 	 * 1 TOP-LEFT
@@ -53,6 +54,7 @@ public class InfraredSensor implements Change {
 	private SampleProvider sp = null;
 	private float[] sample = null;
 	private int[] seek = null;
+	private boolean isRemote = false;
 
 	/** the modes of the EV3GyroSensor */
 	private static final int PROXIMITY_MODE = 0;
@@ -88,8 +90,9 @@ public class InfraredSensor implements Change {
 	 *         only.
 	 */
 	public float measureProximity() {
-		if ((sensor.getCurrentMode() != PROXIMITY_MODE) || (sp == null)) {
+		if ((sensor.getCurrentMode() != PROXIMITY_MODE) || (sp == null) || isRemote) {
 			// switch to distance mode
+			isRemote = false;
 			sp = sensor.getDistanceMode();
 			sample = new float[sp.sampleSize()];
 			// wait a little bit
@@ -109,8 +112,9 @@ public class InfraredSensor implements Change {
 	 */
 	public int[] measureBeacon(int channel) {
 		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
-			if ((sensor.getCurrentMode() != BEACON_MODE) || (sp == null)) {
+			if ((sensor.getCurrentMode() != BEACON_MODE) || (sp == null) || isRemote) {
 				// switch to beacon mode
+				isRemote = false;
 				sp = sensor.getSeekMode();
 				sample = new float[sp.sampleSize()];
 				seek = new int[3];
@@ -118,12 +122,13 @@ public class InfraredSensor implements Change {
 				// Thread.sleep(SWITCHDELAY);
 			}
 			sp.fetchSample(sample, 0);
-			seek[0] = (int) sample[channel - 1];
-			seek[1] = (int) sample[channel];
+			int ix = (channel - 1) * 2;
+			seek[0] = (int) sample[ix++];
+			seek[1] = (int) sample[ix];
 			if (seek[1] > 100) {
 				seek[1] = 100;
 			}
-			seek[2] = (sample[channel] == Float.POSITIVE_INFINITY) ? 0 : 1;
+			seek[2] = (sample[ix] == Float.POSITIVE_INFINITY) ? 0 : 1;
 			return seek;
 
 		} else {
@@ -139,7 +144,9 @@ public class InfraredSensor implements Change {
 	 */
 	public int measureRemote(int channel) {
 		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
+			isRemote = true;
 			return sensor.getRemoteCommand(channel - 1);
+
 		} else {
 			throw new RuntimeException("Invalid Channel number: " + channel);
 		}
@@ -157,7 +164,9 @@ public class InfraredSensor implements Change {
 		if ((direction == CHANGE_INCREASE) || (direction == CHANGE_DECREASE) || (direction == CHANGE_ANY)) {
 			// get initial proximity
 			float iniVal = measureProximity();
-			log.fine("iniVal: " + iniVal);
+			if (log.isLoggable(Level.FINEST)) {
+				log.finest("iniVal: " + iniVal);
+			}
 			float curVal = iniVal;
 			boolean change = false;
 			while (Button.ESCAPE.isUp()) {
@@ -182,7 +191,9 @@ public class InfraredSensor implements Change {
 					change = ((curVal >= (iniVal + amount)) || (curVal <= (iniVal - amount)));
 					break;
 				}
-				log.fine("curVal: " + curVal + ", change: " + change);
+				if (log.isLoggable(Level.FINEST)) {
+					log.finest("curVal: " + curVal + ", change: " + change);
+				}
 				// leave wait loop if change occurred
 				if (change) {
 					break;

@@ -3,6 +3,7 @@
  */
 package le2lejosev3.pblocks;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -67,7 +68,9 @@ class RegulatedMotor {
 	public void motorOnForSeconds(int power, float period, boolean brake) {
 		// setup motor and start it
 		setPower(power);
-		log.fine("on for " + period + " sec");
+		if (log.isLoggable(Level.FINEST)) {
+			log.finest("on for " + period + " sec");
+		}
 		if (power > 0) {
 			motor.forward();
 		}
@@ -159,7 +162,9 @@ class RegulatedMotor {
 				// use negative degrees to turn backward
 				degrs = -degrs;
 			}
-			log.fine("rotate " + degrs + " deg.");
+			if (log.isLoggable(Level.FINEST)) {
+				log.finest("rotate " + degrs + " deg.");
+			}
 			// start motor and rotate the specified number of degrees and brake afterwards
 			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
 			// regulator 'newMove' method. It would correspond to our brake parameter.
@@ -190,7 +195,7 @@ class RegulatedMotor {
 	 * get current power level.
 	 * calculates a power level that corresponds to the current speed.
 	 * 
-	 * @return the power
+	 * @return the power 0..100.
 	 */
 	protected int getPower() {
 		return Math.round(100F * motor.getSpeed() / motor.getMaxSpeed());
@@ -200,7 +205,7 @@ class RegulatedMotor {
 	 * set the motor power level.
 	 * calculates a speed that corresponds to the power level.
 	 * 
-	 * @param power the power to set
+	 * @param power the power to set, 0..100.
 	 */
 	protected void setPower(int power) {
 		// calculate the speed for the regulated motor

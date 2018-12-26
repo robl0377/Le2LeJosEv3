@@ -3,6 +3,7 @@
  */
 package le2lejosev3.pblocks;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lejos.hardware.Button;
@@ -157,7 +158,9 @@ public class UnregulatedMotor {
 			int degrs = (rotations * 360) + degrees;
 			// calculate the degrees to turn to
 			int metc = (power > 0) ? (mstc + degrs) : (mstc - degrs);
-			log.fine("mstc: " + mstc + ", degrs: " + degrs + ", metc: " + metc);
+			if (log.isLoggable(Level.FINEST)) {
+				log.finest("mstc: " + mstc + ", degrs: " + degrs + ", metc: " + metc);
+			}
 
 			// start motor
 			motor.forward();
@@ -175,7 +178,9 @@ public class UnregulatedMotor {
 				mtct = System.currentTimeMillis();
 				// get pending degrees to rotate
 				pdg = (power > 0) ? (metc - mtc) : (mtc - metc);
-				log.fine("mtc: " + mtc + "; motc: " + motc + "; pdg: " + pdg);
+				if (log.isLoggable(Level.FINEST)) {
+					log.finest("mtc: " + mtc + "; motc: " + motc + "; pdg: " + pdg);
+				}
 
 				// check if not rotating any more (blocked)
 				if (mtc == motc) {

@@ -10,16 +10,16 @@ import lejos.hardware.ev3.EV3;
 import lejos.hardware.port.Port;
 
 /**
- * Move Steering Block using EV3 Large Regulated Motors.
+ * Move Steering Block using Unregulated Motors.
  * 
  * @author Roland Blochberger
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FMove.html
  * @see EV3 Move Steering Block Explained,
  *      https://communities.theiet.org/blogs/698/1706
  */
-public class MoveSteering extends MoveBase {
+public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 
-	private static final Logger log = Logger.getLogger(MoveSteering.class.getName());
+	private static final Logger log = Logger.getLogger(MoveSteeringUnregulated.class.getName());
 
 	/**
 	 * Constructor.
@@ -27,7 +27,7 @@ public class MoveSteering extends MoveBase {
 	 * @param leftMotorPort
 	 * @param rightMotorPort
 	 */
-	public MoveSteering(Port leftMotorPort, Port rightMotorPort) {
+	public MoveSteeringUnregulated(Port leftMotorPort, Port rightMotorPort) {
 		super(leftMotorPort, rightMotorPort);
 	}
 
@@ -42,7 +42,7 @@ public class MoveSteering extends MoveBase {
 		int[] motorPower = new int[2];
 		calcPower(steering, power, motorPower);
 		setPower(motorPower[0], motorPower[1]);
-		startMotors(motorPower[0], motorPower[1]);
+		startMotors();
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class MoveSteering extends MoveBase {
 			int[] motorPower = new int[2];
 			calcPower(steering, power, motorPower);
 			setPower(motorPower[0], motorPower[1]);
-			startMotors(motorPower[0], motorPower[1]);
+			startMotors();
 			// wait time in seconds
 			Wait.time(period);
 			// switch motors off
