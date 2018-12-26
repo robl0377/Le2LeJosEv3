@@ -16,13 +16,12 @@ import java.util.logging.Logger;
 public class Setup {
 
 	/**
-	 * configure logging to write into a file; the logger level is ALL.
+	 * configure logging to write into a file; the root logger level is FINE.
 	 * 
 	 * @param clazz       the main class of the program.
-	 * @param loggerLevel the level of the root logger.
 	 */
 	public static void log2File(Class<?> clazz) {
-		log2File(clazz, Level.ALL);
+		log2File(clazz, Level.FINE);
 	}
 
 	/**
@@ -49,18 +48,32 @@ public class Setup {
 			String dir = getInstallDir(clazz);
 			// log file name
 			String fname = dir + File.separator + clazz.getSimpleName() + "%g%u.log";
-			// file handler: log file name, log file size limit, log file generations, do
-			// not append
+			// create file handler: log file name, log file size limit, log file generations, do not append
 			fileTxt = new FileHandler(fname, 2 * 1024 * 1024, 3, false);
 			fileTxt.setFormatter(new BasicFormatter());
 			fileTxt.setLevel(Level.ALL);
 			fileTxt.setEncoding("UTF-8");
+			// add the file handler as the only handler to the root logger
 			logger.addHandler(fileTxt);
 
 		} catch (Exception e) {
 			System.err.println("Cannot initialize logging");
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the Level of the root logger.
+	 */
+	public static Level getRootLoggerLevel() {
+		return Logger.getLogger("").getLevel();
+	}
+
+	/**
+	 * @param level the new Level of the root logger.
+	 */
+	public static void setRootLoggerLevel(Level level) {
+		Logger.getLogger("").setLevel(level);
 	}
 
 	/**
