@@ -5,6 +5,7 @@ package le2lejosev3.tests;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
@@ -27,8 +28,8 @@ public class DisplayImageTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// setup logging to file
-		Setup.log2File(clazz);
+		// setup logging to file for all levels
+		Setup.log2File(clazz, Level.ALL);
 		log.fine("Starting ...");
 
 		// determine which image files are there

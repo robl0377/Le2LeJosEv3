@@ -3,6 +3,7 @@
  */
 package le2lejosev3.tests;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
@@ -26,8 +27,8 @@ public class BrickStatusLightTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// setup logging to file
-		Setup.log2File(clazz);
+		// setup logging to file for all levels
+		Setup.log2File(clazz, Level.ALL);
 		log.fine("Starting ...");
 
 		Display.textGrid("Brick Status Light", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);

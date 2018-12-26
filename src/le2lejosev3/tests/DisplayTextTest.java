@@ -3,6 +3,7 @@
  */
 package le2lejosev3.tests;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
@@ -25,8 +26,8 @@ public class DisplayTextTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// setup logging to file
-		Setup.log2File(clazz);
+		// setup logging to file for all levels
+		Setup.log2File(clazz, Level.ALL);
 		log.fine("Starting ...");
 
 		// display text
@@ -52,11 +53,11 @@ public class DisplayTextTest {
 		// display all ASCII characters and the German umlauts
 		Display.textPixels("`1234567890-=qwer", true, 0, 0, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textPixels("tyuiop[]\\asdfghjk", false, 0, 20, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		Display.textPixels("l;'/zxcvbnm‰ˆ¸ﬂ,.", false, 0, 40, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textPixels("l;'/zxcvbnm√§√∂√º√ü,.", false, 0, 40, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textPixels("~@#$%^&*()_+QWER", false, 0, 60, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textPixels("TYUIOP{}|ASDFGHJK", false, 0, 80, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		Display.textPixels("L:\"?ZXCVBNMƒ÷‹<>", false, 0, 100, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		// XXX characters displayed as spaces: ‰ˆ¸ﬂƒ÷‹
+		Display.textPixels("L:\"?ZXCVBNM√Ñ√ñ√ú<>", false, 0, 100, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		// XXX characters displayed as spaces: √§√∂√º√ü√Ñ√ñ√ú
 
 		Button.waitForAnyPress();
 
