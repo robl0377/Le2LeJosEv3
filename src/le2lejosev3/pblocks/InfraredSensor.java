@@ -86,12 +86,11 @@ public class InfraredSensor implements Change {
 	/**
 	 * Fetch and return the proximity distance from the sensor.
 	 * 
-	 * @return the the approximate distance (0..100). However, LeJOS returns 0..55
-	 *         only.
+	 * @return the the approximate distance (0..100).
 	 */
 	public float measureProximity() {
 		if ((sensor.getCurrentMode() != PROXIMITY_MODE) || (sp == null) || isRemote) {
-			// switch to distance mode
+			// switch to proximity mode
 			isRemote = false;
 			sp = sensor.getDistanceMode();
 			sample = new float[sp.sampleSize()];

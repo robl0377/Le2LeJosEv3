@@ -3,7 +3,7 @@
  */
 package le2lejosev3.pblocks;
 
-import org.jfree.util.Log;
+import java.util.logging.Logger;
 
 /**
  * Timer Block
@@ -12,6 +12,8 @@ import org.jfree.util.Log;
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FTimer.html
  */
 public class Timer {
+
+	private static final Logger log = Logger.getLogger(Timer.class.getName());
 
 	// the number of timers available (the EV3 supports 8 timers)
 	private static final int count = 8;
@@ -36,7 +38,7 @@ public class Timer {
 		if (timerID > 0 && timerID <= count) {
 			return (stop - startValues[timerID - 1]) / 1000F;
 		} else {
-			Log.warn("invalid timerID " + timerID);
+			log.warning("invalid timerID " + timerID);
 			return 0F;
 		}
 	}
@@ -52,7 +54,7 @@ public class Timer {
 			startValues[timerID - 1] = System.currentTimeMillis();
 
 		} else {
-			Log.warn("invalid timerID " + timerID);
+			log.warning("invalid timerID " + timerID);
 		}
 	}
 }
