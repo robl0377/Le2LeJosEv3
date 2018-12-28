@@ -26,6 +26,7 @@ The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
 - Le2LeJosEv3-Wack3m (see https://github.com/robl0377/Le2LeJosEv3-Wack3m)
 - Le2LeJosEv3-El3ctricGuitar (see https://github.com/robl0377/Le2LeJosEv3-El3ctricGuitar)
 - Le2LeJosEv3-RoboDoz3r (see https://github.com/robl0377/Le2LeJosEv3-RoboDoz3r)
+- Le2LeJosEv3-Znap (see https://github.com/robl0377/Le2LeJosEv3-Znap)
 
 
 ---
