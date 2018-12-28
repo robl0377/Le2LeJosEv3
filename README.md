@@ -14,8 +14,11 @@ However, it still makes it easy to port a LEGO® icon-based Program to the Java 
 I plan to build further robots and port their LEGO® icon-based programs to LeJOS EV3 and thereby extending the _Le2LeJosEv3_ Library more and more.
 
 ## How To Use
-If you want to use the _Le2LeJosEv3_ Library in your own LeJOS EV3 project, just copy the classes in the packages
-_le2lejosev3.pblocks_ and _le2lejosev3.logging_ into your project.
+If you want to use the _Le2LeJosEv3_ Library in your own LeJOS EV3 project, do one ot the following:
+1. Just copy the classes in the packages _le2lejosev3.pblocks_ and _le2lejosev3.logging_ into your project's source location.
+2. Just copy the archive files in the _lib_ directory into your own project's _lib_ directory and include the _le2lejosev3.jar_ file in your project's classpath.
+
+Anyways the LeJOS EV3 Eclipse plugin will download and run it on the EV3 brick.
 
 ## Projects
 The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
