@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Le2LeJosEv3 Library ANT Build file -->
+<project name="Le2LeJosEv3" default="all">
+
+	<!-- Patternset including all files from the current directory and all subdirectories -->
+	<patternset id="files.any.recursive">
+		<include name="**/*.*" />
+		<include name="**/*" />
+	</patternset>
+
+	<!-- Patternset including all final result files -->
+	<patternset id="files.final.result">
+		<include name="*.jar" />
+		<include name="*.zip" />
+	</patternset>
+
+	<!-- Path containing the full classpath for compilation -->
+	<path id="project.classpath">
+		<pathelement location="bin" />
+		<fileset dir="${ev3.home}/lib/ev3" includes="*.jar" />
+	</path>
+
+	<!-- init -->
+	<target name="init">
+		<mkdir dir="classes" />
+		<mkdir dir="lib" />
+		<tstamp>
+			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+	</target>
+
+	<!-- clean -->
+	<target name="clean">
+		<delete quiet="true" failonerror="false">
+			<fileset dir="classes">
+				<patternset refid="files.any.recursive" />
+			</fileset>
+		</delete>
+		<delete quiet="true" failonerror="false">
+			<fileset dir="lib">
+				<patternset refid="files.final.result" />
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- compile -->
+	<target name="compile" depends="init">
+		<javac destdir="classes" debug="true" includeantruntime="false" target="1.7" source="1.7" fork="true" compiler="javac1.7" executable="c:/Program Files (x86)/Java/jdk1.7.0_80/bin/javac.exe">
+			<src path="src" />
+			<classpath refid="project.classpath" />
+		</javac>
+	</target>
+
+	<!-- packaging -->
+	<target name="packaging" depends="init,compile">
+		<jar destfile="lib/le2lejosev3.jar">
+			<manifest>
+				<attribute name="Product-Name" value="Le2LeJosEv3" />
+				<attribute name="Product-Vendor" value="Le2LeJosEv3 Team" />
+				<attribute name="Built-Date" value="${build.time}" />
+			</manifest>
+			<zipfileset dir="classes" includes="le2lejosev3/logging/*.class,le2lejosev3/pblocks/*.class" />
+		</jar>
+		<delete quiet="true" failonerror="false" dir="classes" />
+		<zip destfile="lib/le2lejosev3-src.zip">
+			<zipfileset dir="src" includes="le2lejosev3/logging/*.java,le2lejosev3/pblocks/*.java" />
+		</zip>
+	</target>
+
+	<!-- packaging -->
+	<target name="all" depends="init,clean,compile,packaging">
+	</target>
+
+</project>
