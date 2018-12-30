@@ -19,9 +19,9 @@ import lejos.hardware.port.SensorPort;
  * 
  * @author Roland Blochberger
  */
-public class WaitInfraredTest {
+public class WaitInfraredSensorTest {
 
-	private static Class<?> clazz = WaitInfraredTest.class;
+	private static Class<?> clazz = WaitInfraredSensorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port irSensorPort = SensorPort.S4;

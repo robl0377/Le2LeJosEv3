@@ -19,9 +19,9 @@ import lejos.hardware.port.SensorPort;
  * 
  * @author Roland Blochberger
  */
-public class InfraredTest {
+public class InfraredSensorTest {
 
-	private static Class<?> clazz = InfraredTest.class;
+	private static Class<?> clazz = InfraredSensorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port irSensorPort = SensorPort.S4;

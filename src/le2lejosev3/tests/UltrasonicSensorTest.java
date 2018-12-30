@@ -19,9 +19,9 @@ import lejos.hardware.port.SensorPort;
  * 
  * @author Roland Blochberger
  */
-public class UltrasonicTest {
+public class UltrasonicSensorTest {
 
-	private static Class<?> clazz = UltrasonicTest.class;
+	private static Class<?> clazz = UltrasonicSensorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port usSensorPort = SensorPort.S3;
