@@ -67,7 +67,7 @@
 		</zip>
 	</target>
 
-	<!-- packaging -->
+	<!-- all -->
 	<target name="all" depends="init,clean,compile,packaging">
 	</target>
 
