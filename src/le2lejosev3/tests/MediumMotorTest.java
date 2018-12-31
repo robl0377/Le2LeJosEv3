@@ -86,6 +86,20 @@ public class MediumMotorTest {
 		// Wait until button press
 		Button.waitForAnyPress();
 
+		// -----------------------------------------------
+		Display.textGrid("OnForDegrees Seq.", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
+
+		// run motor for +90 degrees and -90 degrees immediately one after another
+		degs = mot.measureDegrees();
+		log.fine("Motor started at " + degs + "degr.");
+		mot.motorOnForDegrees(100, 90, true);
+		mot.motorOnForDegrees(-100, 90, true);
+		dege = mot.measureDegrees();
+		log.fine("Motor stopped at " + dege + "degr.: rotated: " + (dege - degs) + "degr.");
+		
+		// Wait until button press
+		Button.waitForAnyPress();
+
 		log.fine("The End");
 	}
 
