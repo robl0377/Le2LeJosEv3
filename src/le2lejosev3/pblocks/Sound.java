@@ -4,12 +4,17 @@
 package le2lejosev3.pblocks;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import lejos.hardware.Button;
 
 /**
  * Sound Block.
+ * 
+ * BEWARE: This class uses the EV3Audio class in this same package. Do NOT use
+ * the original LeJOS EV3Audio class or the class lejos.hardware.Sound that uses
+ * it in the same program as this class!
  * 
  * @author Roland Blochberger
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FSound.html
@@ -51,8 +56,11 @@ public class Sound {
 
 	/**
 	 * Play a sound file.
-	 * Note: The sound file must already reside on the EV3 brick. Please upload it
-	 * (by SCP) to the SOUND_DIR directory before using this programming block.
+	 * The sound file can be part of a jar file in the classpath, or reside as
+	 * ordinary file on the EV3 Brick.
+	 * If you did not pack the sound file into a jar file and added it to the
+	 * project's classpath, please upload the sound file (by SCP) to the SOUND_DIR
+	 * directory before using this programming block.
 	 * The sound file must be mono, from 8kHz to 48kHz, and 8-bit or 16-bit PWM.
 	 * 
 	 * @param filename the file name only; you can omit the DEFAULT_EXT.
@@ -64,28 +72,56 @@ public class Sound {
 			// no extension found: append the default sound file extension
 			filename = filename + '.' + DEFAULT_EXT;
 		}
-		File soundFile = new File(SOUND_DIR, filename);
-		if (soundFile.canRead()) {
+		InputStream in = Sound.class.getResourceAsStream("/resources/" + filename);
+		if (in != null) {
+			// resource found:
 			switch (playType) {
 			case WAIT:
 				// Play sound and wait until done
-				int r = lejos.hardware.Sound.playSample(soundFile, volume);
+				log.finest("playSample: /resources/" + filename);
+				int r = ((EV3Audio) EV3Audio.getAudio()).playSample(in, volume);
 				if (r < 0) {
-					log.warning("playSample(" + soundFile.getAbsolutePath() + "): Error " + r);
+					log.warning("playSample(/resources/" + filename + "): Error " + r);
 				}
 				break;
 			case ONCE:
-				soundthread.setFile(soundFile, volume, false);
+				soundthread.setRes(filename, volume, false);
 				break;
 			case REPEAT:
-				soundthread.setFile(soundFile, volume, true);
+				soundthread.setRes(filename, volume, true);
 				break;
 			default:
 				throw new RuntimeException("Invalid play type value: " + playType);
 			}
 
 		} else {
-			log.warning("Cannot read sound file " + soundFile.getAbsolutePath());
+			// no resource found: check if file exists in the SOUND_DIR
+			File soundFile = new File(SOUND_DIR, filename);
+			if (soundFile.canRead()) {
+				// file found
+				switch (playType) {
+				case WAIT:
+					// Play sound and wait until done
+					log.finest("playSample: " + soundFile.getAbsolutePath());
+					// int r = lejos.hardware.Sound.playSample(soundFile, volume);
+					int r = EV3Audio.getAudio().playSample(soundFile, volume);
+					if (r < 0) {
+						log.warning("playSample(" + soundFile.getAbsolutePath() + "): Error " + r);
+					}
+					break;
+				case ONCE:
+					soundthread.setFile(soundFile, volume, false);
+					break;
+				case REPEAT:
+					soundthread.setFile(soundFile, volume, true);
+					break;
+				default:
+					throw new RuntimeException("Invalid play type value: " + playType);
+				}
+
+			} else {
+				log.warning("Cannot read sound file " + soundFile.getAbsolutePath());
+			}
 		}
 	}
 
@@ -103,7 +139,8 @@ public class Sound {
 		switch (playType) {
 		case WAIT:
 			// Play tone and wait until done
-			lejos.hardware.Sound.playTone(frequency, durMs, volume);
+			// lejos.hardware.Sound.playTone(frequency, durMs, volume);
+			EV3Audio.getAudio().playTone(frequency, durMs, volume);
 			break;
 		case ONCE:
 			soundthread.setTone(frequency, durMs, volume, false);
@@ -163,7 +200,8 @@ public class Sound {
 		int frequency = calcFreq(note);
 		int durMs = Math.round(duration * 1000);
 		// Play tone and wait until done
-		lejos.hardware.Sound.playNote(instr, frequency, durMs);
+		// lejos.hardware.Sound.playNote(instr, frequency, durMs);
+		EV3Audio.getAudio().playNote(instr, frequency, durMs);
 	}
 
 	/**
@@ -197,6 +235,7 @@ public class Sound {
 	 */
 	static class SoundThread extends Thread {
 
+		private String resname = null;
 		private File soundFile = null;
 		private int frequency = 0;
 		private int durMs = 0;
@@ -212,6 +251,23 @@ public class Sound {
 		}
 
 		/**
+		 * Set the parameters to play a sound resource.
+		 * 
+		 * @param resname
+		 * @param volume
+		 * @param repeat
+		 */
+		public void setRes(String resname, int volume, boolean repeat) {
+			synchronized (this) {
+				this.resname = resname;
+				this.soundFile = null;
+				this.frequency = 0;
+				this.volume = volume;
+				this.repeat = repeat;
+			}
+		}
+
+		/**
 		 * Set the parameters to play a sound file.
 		 * 
 		 * @param soundFile
@@ -220,7 +276,9 @@ public class Sound {
 		 */
 		public void setFile(File soundFile, int volume, boolean repeat) {
 			synchronized (this) {
+				this.resname = null;
 				this.soundFile = soundFile;
+				this.frequency = 0;
 				this.volume = volume;
 				this.repeat = repeat;
 			}
@@ -236,6 +294,8 @@ public class Sound {
 		 */
 		public void setTone(int frequency, int durMs, int volume, boolean repeat) {
 			synchronized (this) {
+				this.resname = null;
+				this.soundFile = null;
 				this.frequency = frequency;
 				this.durMs = durMs;
 				this.volume = volume;
@@ -247,7 +307,9 @@ public class Sound {
 		 * Stop any sound playing in the background.
 		 */
 		public void quiet() {
+			// clear all command data
 			synchronized (this) {
+				this.resname = null;
 				this.soundFile = null;
 				this.frequency = 0;
 				this.repeat = false;
@@ -259,24 +321,45 @@ public class Sound {
 		 */
 		@Override
 		public void run() {
+			String resname = null;
 			File soundFile = null;
 			int frequency = 0;
 			int durMs = 0;
 			int volume = 0;
+			int r = 0;
 			boolean repeat = false;
 			while (Button.ESCAPE.isUp()) {
 				Thread.yield();
 
 				synchronized (this) {
+					resname = this.resname;
 					soundFile = this.soundFile;
 					frequency = this.frequency;
 					durMs = this.durMs;
 					volume = this.volume;
 					repeat = this.repeat;
 				}
+				if (resname != null) {
+					// play sound resource and wait until done
+					InputStream in = Sound.class.getResourceAsStream("/resources/" + resname);
+					if (in != null) {
+						log.finest("playSample: /resources/" + resname);
+						r = ((EV3Audio) EV3Audio.getAudio()).playSample(in, volume);
+						if (r < 0) {
+							log.warning("playSample(/resources/" + resname + "): Error " + r);
+						}
+					}
+					if (in == null || !repeat) {
+						synchronized (this) {
+							this.resname = null;
+						}
+					}
+				}
 				if (soundFile != null) {
 					// play sound file and wait until done
-					int r = lejos.hardware.Sound.playSample(soundFile, volume);
+					// int r = lejos.hardware.Sound.playSample(soundFile, volume);
+					log.finest("playSample: " + soundFile.getAbsolutePath());
+					r = EV3Audio.getAudio().playSample(soundFile, volume);
 					if (r < 0) {
 						log.warning("playSample(" + soundFile.getAbsolutePath() + "): Error " + r);
 					}
@@ -288,7 +371,8 @@ public class Sound {
 				}
 				if (frequency != 0) {
 					// play tone and wait until done
-					lejos.hardware.Sound.playTone(frequency, durMs, volume);
+					// lejos.hardware.Sound.playTone(frequency, durMs, volume);
+					EV3Audio.getAudio().playTone(frequency, durMs, volume);
 					if (!repeat) {
 						synchronized (this) {
 							this.frequency = 0;

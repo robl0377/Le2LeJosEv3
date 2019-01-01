@@ -306,13 +306,11 @@ public class Display {
 			// no extension found: append the default sound file extension
 			filename = filename + '.' + DEFAULT_EXT;
 		}
-		File imageFile = new File(IMAGE_DIR, filename);
-		if (imageFile.canRead()) {
-			// read the file into an image
-			InputStream fis = null;
+		InputStream in = Display.class.getResourceAsStream("/resources/" + filename);
+		if (in != null) {
+			// resource found:
 			try {
-				fis = new FileInputStream(imageFile);
-				Image img = Image.createImage(fis);
+				Image img = Image.createImage(in);
 				if (clrScr) {
 					gLcd.clear();
 					gLcd.refresh();
@@ -321,26 +319,61 @@ public class Display {
 
 			} catch (ArrayIndexOutOfBoundsException ie) {
 				// ignore that
-				//log.log(Level.WARNING,
-				//		"Error displaying image file " + imageFile.getAbsolutePath() + ": " + ie.toString());
+				// log.log(Level.WARNING,
+				// "Error displaying image file " + imageFile.getAbsolutePath() + ": " +
+				// ie.toString());
 
 			} catch (Exception ex) {
 				log.log(Level.WARNING,
-						"Cannot display image file " + imageFile.getAbsolutePath() + ": " + ex.toString(), ex);
+						"Cannot display image: /resources/" + filename + ": " + ex.toString(), ex);
 
 			} finally {
-				if (fis != null) {
+				if (in != null) {
 					try {
-						fis.close();
+						in.close();
 					} catch (IOException e) {
 						// ignore
 					}
 				}
 			}
-		} else {
-			log.log(Level.WARNING, "Cannot read image file {0}", imageFile.getAbsolutePath());
-		}
 
+		} else {
+			File imageFile = new File(IMAGE_DIR, filename);
+			if (imageFile.canRead()) {
+				// read the file into an image
+				InputStream fis = null;
+				try {
+					fis = new FileInputStream(imageFile);
+					Image img = Image.createImage(fis);
+					if (clrScr) {
+						gLcd.clear();
+						gLcd.refresh();
+					}
+					gLcd.drawImage(img, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP);
+
+				} catch (ArrayIndexOutOfBoundsException ie) {
+					// ignore that
+					// log.log(Level.WARNING,
+					// "Error displaying image file " + imageFile.getAbsolutePath() + ": " +
+					// ie.toString());
+
+				} catch (Exception ex) {
+					log.log(Level.WARNING,
+							"Cannot display image: " + imageFile.getAbsolutePath() + ": " + ex.toString(), ex);
+
+				} finally {
+					if (fis != null) {
+						try {
+							fis.close();
+						} catch (IOException e) {
+							// ignore
+						}
+					}
+				}
+			} else {
+				log.log(Level.WARNING, "Cannot read image file {0}", imageFile.getAbsolutePath());
+			}
+		}
 	}
 
 	/**
