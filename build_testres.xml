@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Le2LeJosEv3-ColorSorter Resources ANT Build file -->
+<project name="Le2LeJosEv3-testres" default="all">
+
+	<!-- packaging -->
+	<target name="packaging">
+		<tstamp>
+			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+		<jar destfile="testres/le2lejosev3-testres.jar">
+			<manifest>
+				<attribute name="Product-Name" value="Le2LeJosEv3-TestRes" />
+				<attribute name="Product-Vendor" value="Le2LeJosEv3 Team" />
+				<attribute name="Built-Date" value="${build.time}" />
+			</manifest>
+			<zipfileset dir="testres" includes="resources/*.lni,resources/*.wav" />
+		</jar>
+	</target>
+
+	<!-- all -->
+	<target name="all" depends="packaging">
+	</target>
+
+</project>
