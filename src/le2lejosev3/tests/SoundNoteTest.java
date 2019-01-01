@@ -57,6 +57,24 @@ public class SoundNoteTest {
 		Button.waitForAnyPress();
 
 		// -----------------------------------------------
+		// play frequencies from El3ctric Guitar
+		int[] freqs = new int[] { 1318, 1174, 987, 880, 783, 659, 587, 493, 440, 392, 329, 293 };
+		for (int freq : freqs) {
+			// display frequency and hint
+			Display.textGrid("Playing:" + freq + "Hz", true, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
+			Display.textGrid("Press Button", false, 0, 5, Display.COLOR_BLACK, Display.FONT_NORMAL);
+
+			// play tones
+			log.fine("Playing " + freq + "Hz");
+			Sound.playTone(freq, 0.12F, 80, Sound.WAIT);
+			log.fine("Playing done");
+			Wait.time(0.06F);
+		}
+
+		// Wait until button press
+		Button.waitForAnyPress();
+
+		// -----------------------------------------------
 		// Play notes on LeJOS instruments
 		String name = null;
 		for (int instrument : new int[] { Sound.PIANO, Sound.FLUTE, Sound.XYLOPHONE }) {

@@ -17,9 +17,9 @@ import lejos.hardware.Button;
  * 
  * @author Roland Blochberger
  */
-public class DisplayImageTest {
+public class DisplayImageFileTest {
 
-	private static Class<?> clazz = DisplayImageTest.class;
+	private static Class<?> clazz = DisplayImageFileTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	/**

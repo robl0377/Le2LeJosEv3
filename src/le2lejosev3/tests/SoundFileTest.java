@@ -39,7 +39,7 @@ public class SoundFileTest {
 			@Override
 			public boolean accept(File dir, String name) {
 				log.fine("found file " + dir.getAbsolutePath() + File.separator + name);
-				return name.toLowerCase().endsWith(".wav") || name.toLowerCase().endsWith(".rsf");
+				return name.toLowerCase().endsWith(".wav");
 			}
 		});
 		if (soundFiles == null || soundFiles.length == 0) {
