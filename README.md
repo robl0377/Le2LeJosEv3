@@ -3,7 +3,7 @@ A LeJOS EV3 Implementation of _LEGO® Mindstorms EV3 Programming Blocks (icons)_
 Please see the **Le2LeJosEv3_Handbook** for more details. It is a LibreOffice Writer 6.0 document. (You can download LibreOffice at https://www.libreoffice.org/)
 
 ## Library
-The **Le2LeJosEv3** Library sits on top of the current version of the LeJOS EV3 framework. I am using the LeJOS EV3 v0.9.1beta (see https://sourceforge.net/projects/ev3.lejos.p/) framework and a standard LEGO® Mindstorms EV3 Brick.
+The **Le2LeJosEv3** Library sits on top of the current version of the LeJOS EV3 framework: I am using the LeJOS EV3 v0.9.1beta (see https://sourceforge.net/projects/ev3.lejos.p/) framework and a standard LEGO® Mindstorms EV3 Brick.
 
 The _Le2LeJosEv3_ Library intends to provide Java programmers with methods that are similar to use as the LEGO® Programming Blocks (icons).
 
