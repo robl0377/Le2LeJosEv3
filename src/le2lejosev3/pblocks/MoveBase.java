@@ -55,6 +55,20 @@ public class MoveBase {
 	}
 
 	/**
+	 * @return the leftMotor
+	 */
+	public EV3LargeRegulatedMotor getLeftMotor() {
+		return leftMotor;
+	}
+
+	/**
+	 * @return the rightMotor
+	 */
+	public EV3LargeRegulatedMotor getRightMotor() {
+		return rightMotor;
+	}
+
+	/**
 	 * Set the power level for both motors.
 	 * calculates a speed that corresponds to the power level.
 	 * 
