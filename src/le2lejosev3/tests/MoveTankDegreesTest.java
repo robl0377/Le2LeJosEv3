@@ -7,38 +7,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
-import le2lejosev3.pblocks.MoveSteering;
+import le2lejosev3.pblocks.MoveTank;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 
 /**
- * Test for the MoveSteering.
- * NOTE: Be sure the motors can run freely.
+ * Test for the MoveTank.
+ * NOTE: Be sure the motors can turn for about 270 degrees freely. Start both of
+ * them at the middle position.
  * 
  * @author Roland Blochberger
  */
-public class MoveSteeringTest {
+public class MoveTankDegreesTest {
 
-	private static Class<?> clazz = MoveSteeringTest.class;
+	private static Class<?> clazz = MoveTankDegreesTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port leftMotorPort = MotorPort.A;
 	static final Port rightMotorPort = MotorPort.D;
 
 	/**
+	 * Main program entry point.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// setup logging to file for all levels
 		Setup.log2File(clazz, Level.ALL);
-		log.fine("Starting ...");
+		log.info("Starting ...");
 
 		// instantiate the move class
-		MoveSteering mst = new MoveSteering(leftMotorPort, rightMotorPort);
+		MoveTank mtt = new MoveTank(leftMotorPort, rightMotorPort);
 		// run the tests
-		MoveSteeringUtil.steeringTest(mst);
+		MoveTankUtil.tankDegreesTest(mtt);
 
-		log.fine("The End");
+		log.info("The End");
 	}
-
 }

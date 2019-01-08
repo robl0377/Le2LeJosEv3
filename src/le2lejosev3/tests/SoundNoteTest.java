@@ -69,6 +69,10 @@ public class SoundNoteTest {
 			Sound.playTone(freq, 0.12F, 80, Sound.WAIT);
 			log.fine("Playing done");
 			Wait.time(0.06F);
+
+			if (Button.ESCAPE.isDown()) {
+				break;
+			}
 		}
 
 		// Wait until button press

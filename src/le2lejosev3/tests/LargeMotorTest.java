@@ -7,16 +7,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
-import le2lejosev3.pblocks.Display;
 import le2lejosev3.pblocks.LargeMotor;
-import le2lejosev3.pblocks.Wait;
-import lejos.hardware.Button;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 
 /**
  * Test for the large motor.
- * NOTE: Be sure the motor can run freely.
+ * NOTE: Be sure the motor(s) can run freely.
  * 
  * @author Roland Blochberger
  */
@@ -25,7 +22,7 @@ public class LargeMotorTest {
 	private static Class<?> clazz = LargeMotorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port largeMotorPort = MotorPort.B;
+	static final Port[] motorPorts = new Port[] { MotorPort.A, MotorPort.D };
 
 	/**
 	 * Main program entry point.
@@ -35,58 +32,17 @@ public class LargeMotorTest {
 	public static void main(String[] args) {
 		// setup logging to file for all levels
 		Setup.log2File(clazz, Level.ALL);
-		log.fine("Starting ...");
+		log.info("Starting ...");
 
-		// instantiate the motor
-		LargeMotor mot = new LargeMotor(largeMotorPort);
-		log.fine("Created Large Motor at Port " + mot.getPortName());
+		for (Port motorPort : motorPorts) {
+			log.info("");
+			// instantiate the motor
+			LargeMotor mot = new LargeMotor(motorPort);
+			log.info("Created Large IMotor at Port " + mot.getPortName());
+			// test the motor
+			MotorUtil.motorTest("Large", mot);
+		}
 
-		// -----------------------------------------------
-		Display.textGrid("Large Motor", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
-
-		// run motor backward for 0.9 seconds and brake afterward
-		log.fine("Motor start");
-		mot.motorOnForSeconds(-75, 0.9F, true);
-		log.fine("Motor stop");
-
-		// Wait 0.9 seconds
-		Wait.time(0.9F);
-
-		// run motor forward for 0.9 seconds and brake afterward
-		log.fine("Motor start");
-		mot.motorOnForSeconds(75, 0.9F, true);
-		log.fine("Motor stop");
-
-		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		// Wait until button press
-		Button.waitForAnyPress();
-
-		// -----------------------------------------------
-		Display.textGrid("OnForDegrees ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
-
-		// run motor backward for 1.5 rotations and brake afterward
-		int degs = mot.measureDegrees();
-		int dege = 0;
-		log.fine("Motor started at " + degs + "degr.");
-		mot.motorOnForRotationsDegrees(-75, 1, 180, true);
-		dege = mot.measureDegrees();
-		log.fine("Motor stopped at " + dege + "degr.: rotated: " + (dege - degs) + "degr.");
-
-		// Wait 0.9 seconds
-		Wait.time(0.9F);
-
-		// run motor forward for 1.5 rotations and brake afterward
-		degs = mot.measureDegrees();
-		log.fine("Motor started at " + degs + "degr.");
-		mot.motorOnForRotationsDegrees(75, 1, 180, true);
-		dege = mot.measureDegrees();
-		log.fine("Motor stopped at " + dege + "degr.: rotated: " + (dege - degs) + "degr.");
-
-		// Wait until button press
-		Button.waitForAnyPress();
-
-		log.fine("The End");
+		log.info("The End");
 	}
-
 }

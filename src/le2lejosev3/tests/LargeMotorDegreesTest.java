@@ -7,19 +7,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
-import le2lejosev3.pblocks.UnregulatedMotor;
+import le2lejosev3.pblocks.LargeMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 
 /**
- * Test for the unregulated motor.
- * NOTE: Be sure the motor can run freely.
+ * Test for the large motor.
+ * NOTE: Be sure the motor(s) can turn for about 270 degrees freely. Start at the
+ * middle position.
  * 
  * @author Roland Blochberger
  */
-public class UnregulatedMotorTest {
+public class LargeMotorDegreesTest {
 
-	private static Class<?> clazz = UnregulatedMotorTest.class;
+	private static Class<?> clazz = LargeMotorDegreesTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port[] motorPorts = new Port[] { MotorPort.A, MotorPort.D };
@@ -32,15 +33,17 @@ public class UnregulatedMotorTest {
 	public static void main(String[] args) {
 		// setup logging to file for all levels
 		Setup.log2File(clazz, Level.ALL);
-		log.fine("Starting ...");
+		log.info("Starting ...");
 
 		for (Port motorPort : motorPorts) {
 			log.info("");
 			// instantiate the motor
-			UnregulatedMotor mot = new UnregulatedMotor(motorPort);
-			log.fine("Created Unregulated IMotor at Port " + mot.getPortName());
-			MotorUtil.motorTest("Unreg.", mot);
+			LargeMotor mot = new LargeMotor(motorPort);
+			log.info("Created Large IMotor at Port " + mot.getPortName());
+			// test the motor
+			MotorUtil.motorDegreesTest("Large", mot);
 		}
-		log.fine("The End");
+
+		log.info("The End");
 	}
 }

@@ -81,6 +81,7 @@ public class TouchSensorTest {
 
 		// -----------------------------------------------
 		// wait until bumped
+		// FIXME Does not work correctly
 		Display.textGrid("Bumped? ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// run until button is bumped
 		while (Button.ENTER.isUp()) {

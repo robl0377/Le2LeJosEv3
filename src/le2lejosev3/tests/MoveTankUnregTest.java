@@ -7,19 +7,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import le2lejosev3.logging.Setup;
-import le2lejosev3.pblocks.MoveSteering;
+import le2lejosev3.pblocks.MoveTankUnregulated;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 
 /**
- * Test for the MoveSteering.
+ * Test for the MoveTank with unregulated motors.
  * NOTE: Be sure the motors can run freely.
  * 
  * @author Roland Blochberger
  */
-public class MoveSteeringTest {
+public class MoveTankUnregTest {
 
-	private static Class<?> clazz = MoveSteeringTest.class;
+	private static Class<?> clazz = MoveTankUnregTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port leftMotorPort = MotorPort.A;
@@ -34,9 +34,9 @@ public class MoveSteeringTest {
 		log.fine("Starting ...");
 
 		// instantiate the move class
-		MoveSteering mst = new MoveSteering(leftMotorPort, rightMotorPort);
+		MoveTankUnregulated mtt = new MoveTankUnregulated(leftMotorPort, rightMotorPort);
 		// run the tests
-		MoveSteeringUtil.steeringTest(mst);
+		MoveTankUtil.tankTest(mtt);
 
 		log.fine("The End");
 	}

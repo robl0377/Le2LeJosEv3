@@ -13,13 +13,14 @@ import lejos.hardware.port.Port;
 
 /**
  * Test for the MoveSteering.
- * NOTE: Be sure the motors can run freely.
+ * NOTE: Be sure the motors can turn for about 270 degrees freely. Start both of
+ * them at the middle position.
  * 
  * @author Roland Blochberger
  */
-public class MoveSteeringTest {
+public class MoveSteeringDegreesTest {
 
-	private static Class<?> clazz = MoveSteeringTest.class;
+	private static Class<?> clazz = MoveSteeringDegreesTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	static final Port leftMotorPort = MotorPort.A;
@@ -36,7 +37,7 @@ public class MoveSteeringTest {
 		// instantiate the move class
 		MoveSteering mst = new MoveSteering(leftMotorPort, rightMotorPort);
 		// run the tests
-		MoveSteeringUtil.steeringTest(mst);
+		MoveSteeringUtil.steeringDegreesTest(mst);
 
 		log.fine("The End");
 	}
