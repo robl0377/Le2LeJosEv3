@@ -103,7 +103,7 @@ public class BrickStatusLight {
 			// pattern += 6; // 3 * EV3LED.PATTERN_HEARTBEAT
 		}
 		// if (log.isLoggable(Level.FINEST)) {
-		// log.finest("on pattern: " + Integer.toBinaryString(pattern));
+		// log.log(Level.FINEST, "on pattern: {0}", Integer.toBinaryString(pattern));
 		// }
 		return pattern;
 	}

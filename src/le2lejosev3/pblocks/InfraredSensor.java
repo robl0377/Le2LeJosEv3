@@ -164,7 +164,7 @@ public class InfraredSensor implements Change {
 			// get initial proximity
 			float iniVal = measureProximity();
 			if (log.isLoggable(Level.FINEST)) {
-				log.finest("iniVal: " + iniVal);
+				log.log(Level.FINEST, "iniVal: {0}", iniVal);
 			}
 			float curVal = iniVal;
 			boolean change = false;
@@ -191,7 +191,7 @@ public class InfraredSensor implements Change {
 					break;
 				}
 				if (log.isLoggable(Level.FINEST)) {
-					log.finest("curVal: " + curVal + ", change: " + change);
+					log.log(Level.FINEST, "curVal: " + curVal + ", change: " + change);
 				}
 				// leave wait loop if change occurred
 				if (change) {

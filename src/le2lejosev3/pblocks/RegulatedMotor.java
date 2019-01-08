@@ -6,39 +6,80 @@ package le2lejosev3.pblocks;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import lejos.hardware.port.Port;
+
 /**
  * Regulated Motor and Motor Rotation Blocks.
  * (common code for LargeMotor and MediumMotor - for internal use only)
  * 
  * @author Roland Blochberger
  */
-class RegulatedMotor {
+class RegulatedMotor implements IMotor {
 
-	private static final Logger log = Logger.getLogger(MediumMotor.class.getName());
+	private static final Logger log = Logger.getLogger(RegulatedMotor.class.getName());
 
+	// the motor port
+	protected Port motorPort;
 	// the regulated motor instance
 	protected lejos.hardware.motor.BaseRegulatedMotor motor = null;
 
 	/**
 	 * Constructor.
+	 * handles the motor resources correctly before exiting
 	 * 
-	 * @param regMotor an instance of either EV3LargeRegulatedMotor or
-	 *                 EV3MediumRegulatedMotor.
+	 * @param motorPort the motor port.
+	 * @param regMotor  an instance of either EV3LargeRegulatedMotor or
+	 *                  EV3MediumRegulatedMotor.
 	 */
-	public RegulatedMotor(lejos.hardware.motor.BaseRegulatedMotor regMotor) {
-		// store motor object
+	protected RegulatedMotor(Port motorPort, lejos.hardware.motor.BaseRegulatedMotor regMotor) {
+		// store motor port and motor instance
+		this.motorPort = motorPort;
 		motor = regMotor;
 		if (motor != null) {
+			// limit the acceleration (maximum is 6000)
+			motor.setAcceleration(2000);
 			// handle resources correctly before exiting
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
-					// stop the motor and wait until done
-					motor.stop();
-					// close resources
-					motor.close();
+					close();
 				}
 			}));
 		}
+	}
+
+	/**
+	 * stop the motor and wait until done, then close resources and remove the
+	 * reference to the motor instance.
+	 */
+	protected void close() {
+		if (motor != null) {
+			// stop the motor and wait until done
+			motor.stop();
+			// close resources
+			motor.close();
+			motor = null;
+		}
+	}
+
+	/**
+	 * @return the motor
+	 */
+	lejos.hardware.motor.BaseRegulatedMotor getMotor() {
+		return motor;
+	}
+
+	/**
+	 * @return the motorPort; or null if not available.
+	 */
+	public Port getPort() {
+		return motorPort;
+	}
+
+	/**
+	 * @return the name of the motor port; or null if not available.
+	 */
+	public String getPortName() {
+		return (this.motorPort != null) ? this.motorPort.getName() : null;
 	}
 
 	/**
@@ -49,12 +90,18 @@ class RegulatedMotor {
 	public void motorOn(int power) {
 		// setup motor and start it
 		setPower(power);
-		if (power > 0) {
-			motor.forward();
-		}
-		if (power < 0) {
-			motor.backward();
-		}
+		start(power);
+	}
+
+	/**
+	 * let motor run indefinitely unregulated and return immediately.
+	 * 
+	 * @param power set power percentage (0..100); + forward; - backward.
+	 */
+	public void UnregulatedOn(int power) {
+		// TODO implement unregulated motor on
+		setPower(power);
+		start(power);
 	}
 
 	/**
@@ -66,21 +113,113 @@ class RegulatedMotor {
 	 *               power but do not brake.
 	 */
 	public void motorOnForSeconds(int power, float period, boolean brake) {
+		if (log.isLoggable(Level.FINEST)) {
+			log.log(Level.FINEST, "on for {0} sec", period);
+		}
 		// setup motor and start it
 		setPower(power);
-		if (log.isLoggable(Level.FINEST)) {
-			log.finest("on for " + period + " sec");
-		}
-		if (power > 0) {
-			motor.forward();
-		}
-		if (power < 0) {
-			motor.backward();
-		}
+		start(power);
 		// wait time in seconds
 		Wait.time(period);
 		// switch motor off
 		motorOff(brake);
+	}
+
+	/**
+	 * let motor run the specified number of degrees.
+	 * 
+	 * @param power   set power percentage (0..100); + forward; - backward.
+	 * @param degrees number of degrees (> 0).
+	 * @param brake   set true to brake at the end of movement; set false to remove
+	 *                power but do not brake.
+	 */
+	public void motorOnForDegrees(int power, int degrees, boolean brake) {
+		motorOnForRotationsDegrees(power, 0, degrees, brake);
+	}
+
+	/**
+	 * let motor run the specified number of rotations.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorOnForRotations(int power, int rotations, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, 0, brake);
+	}
+
+	/**
+	 * let motor run the specified number of rotations and degrees.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations (> 0).
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+	}
+
+	/**
+	 * let motor run the specified number of rotations and degrees (wait until turn is complete).
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations (> 0).
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 * @param immediateReturn true means don't wait for motor stop; false otherwise.
+	 */
+	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake, boolean immediateReturn) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// setup motor power level
+			setPower(power);
+			// calculate the degrees to turn
+			int degrs = (rotations * 360) + degrees;
+			if (log.isLoggable(Level.FINEST)) {
+				log.log(Level.FINEST, "rotate {0} deg.", degrs);
+			}
+			if (power < 0) {
+				// use negative degrees to turn backward
+				degrs = -degrs;
+			}
+			// start motor and rotate the specified number of degrees and brake afterwards.
+			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
+			// regulator 'newMove' method. It would correspond to our brake parameter.
+			// Instead LeJOS always brakes the motor after rotations.
+			motor.rotate(degrs);
+			// at least float motor afterwards if specified
+			if (!brake) {
+				motor.flt(immediateReturn);
+			}
+		}
+	}
+
+	/**
+	 * stop motor.
+	 * 
+	 * @param brake set true to brake at the end of movement; set false to remove
+	 *              power but do not brake.
+	 */
+	public void motorOff(boolean brake) {
+		motorOff(brake, false);
+	}
+
+	/**
+	 * stop motor.
+	 * 
+	 * @param brake set true to brake at the end of movement; set false to remove
+	 *              power but do not brake.
+	 * @param immediateReturn true means don't wait for motor stop; false otherwise.
+	 */
+	public void motorOff(boolean brake, boolean immediateReturn) {
+		if (brake) {
+			motor.stop(immediateReturn);
+		} else {
+			motor.flt(immediateReturn);
+		}
 	}
 
 	/**
@@ -120,78 +259,6 @@ class RegulatedMotor {
 	}
 
 	/**
-	 * let motor run the specified number of degrees.
-	 * 
-	 * @param power   set power percentage (0..100); + forward; - backward.
-	 * @param degrees number of degrees (> 0).
-	 * @param brake   set true to brake at the end of movement; set false to remove
-	 *                power but do not brake.
-	 */
-	public void motorOnForDegrees(int power, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, 0, degrees, brake);
-	}
-
-	/**
-	 * let motor run the specified number of rotations.
-	 * 
-	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations (> 0).
-	 * @param brake     set true to brake at the end of movement; set false to
-	 *                  remove power but do not brake.
-	 */
-	public void motorOnForRotations(int power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
-	}
-
-	/**
-	 * let motor run the specified number of rotations and degrees.
-	 * 
-	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations (> 0).
-	 * @param degrees   number of degrees (> 0).
-	 * @param brake     set true to brake at the end of movement; set false to
-	 *                  remove power but do not brake.
-	 */
-	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
-		if ((rotations > 0) || (degrees > 0)) {
-			// setup motor power level
-			setPower(power);
-			// calculate the degrees to turn
-			int degrs = (rotations * 360) + degrees;
-			if (power < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
-			if (log.isLoggable(Level.FINEST)) {
-				log.finest("rotate " + degrs + " deg.");
-			}
-			// start motor and rotate the specified number of degrees and brake afterwards
-			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
-			// regulator 'newMove' method. It would correspond to our brake parameter.
-			// Instead LeJOS always bakes the motor after rotations.
-			motor.rotate(degrs);
-			// at least float motor afterwards if specified
-			if (!brake) {
-				motor.flt();
-			}
-		}
-	}
-
-	/**
-	 * stop motor.
-	 * 
-	 * @param brake set true to brake at the end of movement; set false to remove
-	 *              power but do not brake.
-	 */
-	public void motorOff(boolean brake) {
-		if (brake) {
-			motor.stop();
-		} else {
-			motor.flt();
-		}
-	}
-
-	/**
 	 * get current power level.
 	 * calculates a power level that corresponds to the current speed.
 	 * 
@@ -213,4 +280,17 @@ class RegulatedMotor {
 		motor.setSpeed(power * motor.getMaxSpeed() / 100F);
 	}
 
+	/**
+	 * start the motor.
+	 * 
+	 * @param power set power direction; + forward; 0 stop; - backward.
+	 */
+	protected void start(int power) {
+		if (power > 0) {
+			motor.forward();
+		}
+		if (power < 0) {
+			motor.backward();
+		}
+	}
 }

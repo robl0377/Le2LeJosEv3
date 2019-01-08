@@ -14,18 +14,28 @@ import lejos.hardware.port.Port;
  * @author Roland Blochberger
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FMoveTank.html
  */
-public class MoveTankUnregulated extends MoveBaseUnregulated {
+public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTank {
 
 	private static final Logger log = Logger.getLogger(MoveTankUnregulated.class.getName());
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param leftMotorPort
-	 * @param rightMotorPort
+	 * @param leftMotorPort  the left motor port.
+	 * @param rightMotorPort the right motor port.
 	 */
 	public MoveTankUnregulated(Port leftMotorPort, Port rightMotorPort) {
 		super(leftMotorPort, rightMotorPort);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param leftMotor  the left UnregulatedMotor.
+	 * @param rightMotor the right UnregulatedMotor.
+	 */
+	public MoveTankUnregulated(UnregulatedMotor leftMotor, UnregulatedMotor rightMotor) {
+		super(leftMotor, rightMotor);
 	}
 
 	/**
@@ -35,10 +45,8 @@ public class MoveTankUnregulated extends MoveBaseUnregulated {
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
 	 */
 	public void motorsOn(int powerLeft, int powerRight) {
-		int[] motorPower = new int[2];
-		calcPower(powerLeft, powerRight, motorPower);
-		setPower(motorPower[0], motorPower[1]);
-		startMotors();
+		int[] motorPower = calcPower(powerLeft, powerRight);
+		super.motorsOn(motorPower[0], motorPower[1]);
 	}
 
 	/**
@@ -52,15 +60,9 @@ public class MoveTankUnregulated extends MoveBaseUnregulated {
 	 */
 	public void motorsOnForSeconds(int powerLeft, int powerRight, float period, boolean brake) {
 		if (period > 0) {
-			// setup motors and start them
-			int[] motorPower = new int[2];
-			calcPower(powerLeft, powerRight, motorPower);
-			setPower(motorPower[0], motorPower[1]);
-			startMotors();
-			// wait time in seconds
-			Wait.time(period);
-			// switch motors off
-			motorsOff(brake);
+			int[] motorPower = calcPower(powerLeft, powerRight);
+			// let motors run for the specified period then brake or float
+			super.motorsOnForSeconds(motorPower[0], motorPower[1], period, brake);
 		}
 	}
 
@@ -103,11 +105,9 @@ public class MoveTankUnregulated extends MoveBaseUnregulated {
 	public void motorsOnForRotationsDegrees(int powerLeft, int powerRight, int rotations, int degrees, boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// setup motors
-			int[] motorPower = new int[2];
-			calcPower(powerLeft, powerRight, motorPower);
-			setPower(motorPower[0], motorPower[1]);
-			// do the rotation
-			rotateMotors(motorPower[0], motorPower[1], rotations, degrees, brake);
+			int[] motorPower = calcPower(powerLeft, powerRight);
+			// do the rotation then brake or float
+			super.motorsOnForRotationsDegrees(motorPower[0], motorPower[1], rotations, degrees, brake);
 		}
 	}
 
@@ -116,9 +116,9 @@ public class MoveTankUnregulated extends MoveBaseUnregulated {
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
-	 * @param motorPower array of 2 int: powerLeft and powerRight.
+	 * @return array of 2 int: powerLeft and powerRight.
 	 */
-	protected void calcPower(int powerLeft, int powerRight, int[] motorPower) {
+	protected int[] calcPower(int powerLeft, int powerRight) {
 		// limit the power
 		if (powerLeft < -100) {
 			powerLeft = -100;
@@ -130,10 +130,12 @@ public class MoveTankUnregulated extends MoveBaseUnregulated {
 		} else if (powerRight > 100) {
 			powerRight = 100;
 		}
-		motorPower[0] = powerLeft;
-		motorPower[1] = powerRight;
 		if (log.isLoggable(Level.FINEST)) {
 			log.finest("left: " + powerLeft + ", right: " + powerRight);
 		}
+		int[] motorPower = new int[2];
+		motorPower[0] = powerLeft;
+		motorPower[1] = powerRight;
+		return motorPower;
 	}
 }

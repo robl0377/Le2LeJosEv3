@@ -6,7 +6,6 @@ package le2lejosev3.pblocks;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 
 /**
@@ -14,58 +13,204 @@ import lejos.hardware.port.Port;
  * 
  * @author Roland Blochberger
  */
-public class MoveBase {
+public class MoveBase implements IMoveRotation {
 
 	private static final Logger log = Logger.getLogger(MoveBase.class.getName());
 
 	private Port leftMotorPort = null;
 	private Port rightMotorPort = null;
 
-	private EV3LargeRegulatedMotor leftMotor = null;
-	private EV3LargeRegulatedMotor rightMotor = null;
+	private LargeMotor leftMotor = null;
+	private LargeMotor rightMotor = null;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param leftMotorPort
-	 * @param rightMotorPort
+	 * @param leftMotorPort  the left motor port.
+	 * @param rightMotorPort the right motor port.
 	 */
 	public MoveBase(Port leftMotorPort, Port rightMotorPort) {
 		this.leftMotorPort = leftMotorPort;
 		this.rightMotorPort = rightMotorPort;
 		// instantiate the motor objects
-		leftMotor = new EV3LargeRegulatedMotor(this.leftMotorPort);
-		rightMotor = new EV3LargeRegulatedMotor(this.rightMotorPort);
-		if ((leftMotor != null) || (rightMotor != null)) {
-			// handle resources correctly before exiting
-			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-				public void run() {
-					// stop the motors and wait until done, then close resources
-					if (leftMotor != null) {
-						leftMotor.stop();
-						leftMotor.close();
-					}
-					if (rightMotor != null) {
-						rightMotor.stop();
-						rightMotor.close();
-					}
-				}
-			}));
+		leftMotor = new LargeMotor(this.leftMotorPort);
+		rightMotor = new LargeMotor(this.rightMotorPort);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param leftMotor  the left LargeMotor.
+	 * @param rightMotor the right LargeMotor.
+	 */
+	public MoveBase(LargeMotor leftMotor, LargeMotor rightMotor) {
+		this.leftMotor = leftMotor;
+		if (leftMotor != null) {
+			this.leftMotorPort = leftMotor.getPort();
+		}
+		this.rightMotor = rightMotor;
+		if (rightMotor != null) {
+			this.rightMotorPort = rightMotor.getPort();
 		}
 	}
 
 	/**
+	 * @return the leftMotor
+	 */
+	public LargeMotor getLeftMotor() {
+		return leftMotor;
+	}
+
+	/**
+	 * @return the rightMotor
+	 */
+	public LargeMotor getRightMotor() {
+		return rightMotor;
+	}
+
+	/**
+	 * let left and right motors run indefinitely and return immediately.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 */
+	protected void motorsOn(int powerLeft, int powerRight) {
+		setPower(powerLeft, powerRight);
+		startMotors(powerLeft, powerRight);
+	}
+
+	/**
+	 * let left and right motors run the specified period in seconds.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param period     the waiting time in seconds (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForSeconds(int powerLeft, int powerRight, float period, boolean brake) {
+		if (period > 0) {
+			// setup motors and start them
+			setPower(powerLeft, powerRight);
+			startMotors(powerLeft, powerRight);
+			// wait time in seconds
+			Wait.time(period);
+			// switch motors off
+			leftMotor.motorOff(brake, true);
+			rightMotor.motorOff(brake, true);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForRotationsDegrees(int powerLeft, int powerRight, int rotations, int degrees,
+			boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// do the rotation
+			rotateMotors(powerLeft, powerRight, rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * stop left and right motors.
+	 * 
+	 * @param brake set true to brake at the end of movement; set false to
+	 *              remove power but do not brake.
+	 */
+	public void motorsOff(boolean brake) {
+		leftMotor.motorOff(brake, true);
+		rightMotor.motorOff(brake, true);
+	}
+
+	/**
+	 * Motor Rotation Block: reset the left motor's rotation to zero.
+	 */
+	public void rotationResetLeft() {
+		leftMotor.rotationReset();
+	}
+
+	/**
+	 * Motor Rotation Block: reset the right motor's rotation to zero.
+	 */
+	public void rotationResetRight() {
+		rightMotor.rotationReset();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current degrees the left motor turned since
+	 * the last reset.
+	 * 
+	 * @return the degrees.
+	 */
+	public int measureDegreesLeft() {
+		return leftMotor.measureDegrees();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current degrees the right motor turned
+	 * since the last reset.
+	 * 
+	 * @return the degrees.
+	 */
+	public int measureDegreesRight() {
+		return rightMotor.measureDegrees();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the number of rotations the left motor turned
+	 * since the last reset.
+	 * 
+	 * @return the rotations.
+	 */
+	public float measureRotationsLeft() {
+		return (leftMotor.measureDegrees() / 360F);
+	}
+
+	/**
+	 * Motor Rotation Block: measure the number of rotations the right motor turned
+	 * since the last reset.
+	 * 
+	 * @return the rotations.
+	 */
+	public float measureRotationsRight() {
+		return (rightMotor.measureDegrees() / 360F);
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current power level of the left motor.
+	 * 
+	 * @return the current power level (0..100).
+	 */
+	public int measureCurrentPowerLeft() {
+		return leftMotor.measureCurrentPower();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current power level of the right motor.
+	 * 
+	 * @return the current power level (0..100).
+	 */
+	public int measureCurrentPowerRight() {
+		return rightMotor.measureCurrentPower();
+	}
+
+	/**
 	 * Set the power level for both motors.
-	 * calculates a speed that corresponds to the power level.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
 	 */
 	protected void setPower(int powerLeft, int powerRight) {
-		// calculate the speed for the regulated motor
-		// (setSpeed takes the absolute value)
-		leftMotor.setSpeed(powerLeft * leftMotor.getMaxSpeed() / 100F);
-		rightMotor.setSpeed(powerRight * rightMotor.getMaxSpeed() / 100F);
+		leftMotor.setPower(powerLeft);
+		rightMotor.setPower(powerRight);
 	}
 
 	/**
@@ -75,18 +220,8 @@ public class MoveBase {
 	 * @param powerRight set power direction; + forward; 0 stop; - backward.
 	 */
 	protected void startMotors(int powerLeft, int powerRight) {
-		if (powerLeft > 0) {
-			leftMotor.forward();
-		}
-		if (powerLeft < 0) {
-			leftMotor.backward();
-		}
-		if (powerRight > 0) {
-			rightMotor.forward();
-		}
-		if (powerRight < 0) {
-			rightMotor.backward();
-		}
+		leftMotor.start(powerLeft);
+		rightMotor.start(powerRight);
 	}
 
 	/**
@@ -106,79 +241,65 @@ public class MoveBase {
 		// calculate the degrees to turn
 		int degrs = (rotations * 360) + degrees;
 		if (log.isLoggable(Level.FINEST)) {
-			log.finest("rotate " + degrs + " deg.");
+			log.log(Level.FINEST, "rotate {0} deg.", degrs);
 		}
+		// setup motor power level
+		leftMotor.setPower(powerLeft);
+		rightMotor.setPower(powerRight);
 		// determine which motor has the bigger power and thus should be monitored for
 		// the degrees
-		if (Math.abs(powerLeft) >= Math.abs(powerRight)) {
+		if (Math.abs(powerLeft) > Math.abs(powerRight)) {
+			// rotate left motor and then brake or float it (don't wait for motor stop)
+			if (powerLeft < 0) {
+				// use negative degrees to turn backward
+				degrs = -degrs;
+			}
 			// switch right motor on
-			if (powerRight > 0) {
-				rightMotor.forward();
-			}
-			if (powerRight < 0) {
-				rightMotor.backward();
-			}
-			// rotate left motor
-			if (powerLeft < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
-			// start left motor and rotate the specified number of degrees and brake
-			// afterwards.
+			rightMotor.start(powerRight);
+			// start motor and rotate the specified number of degrees and brake afterwards.
 			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
 			// regulator 'newMove' method. It would correspond to our brake parameter.
 			// Instead LeJOS always brakes the motor after rotations.
-			leftMotor.rotate(degrs);
-			if (brake) {
-				rightMotor.stop(true);
-			} else {
-				rightMotor.flt(true);
-				// at least float motor after rotation if specified
-				leftMotor.flt(true);
+			leftMotor.getMotor().rotate(degrs, false);
+			// brake or float right motor afterwards (don't wait for motor stop)
+			rightMotor.motorOff(brake, true);
+			// at least float motor afterwards if specified
+			if (!brake) {
+				leftMotor.getMotor().flt(true);
 			}
 
-		} else {
+		} if (Math.abs(powerLeft) < Math.abs(powerRight)) {
+			// rotate right motor and then brake or float it (don't wait for motor stop)
+			if (powerRight < 0) {
+				// use negative degrees to turn backward
+				degrs = -degrs;
+			}
 			// switch left motor on
-			if (powerLeft > 0) {
-				leftMotor.forward();
-			}
-			if (powerLeft < 0) {
-				leftMotor.backward();
-			}
-			// rotate right motor
-			if (powerRight < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
-			// start right motor and rotate the specified number of degrees and brake
-			// afterwards.
+			leftMotor.start(powerLeft);
+			// start motor and rotate the specified number of degrees and brake afterwards.
 			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
 			// regulator 'newMove' method. It would correspond to our brake parameter.
 			// Instead LeJOS always brakes the motor after rotations.
-			rightMotor.rotate(degrs);
-			if (brake) {
-				leftMotor.stop();
-			} else {
-				leftMotor.flt(true);
-				// at least float motor after rotation if specified
-				rightMotor.flt();
+			rightMotor.getMotor().rotate(degrs, false);
+			// brake or float left motor afterwards (don't wait for motor stop)
+			leftMotor.motorOff(brake, true);
+			// at least float motor afterwards if specified
+			if (!brake) {
+				rightMotor.getMotor().flt(true);
 			}
-		}
-	}
-
-	/**
-	 * stop left and right motors.
-	 * 
-	 * @param brake set true to brake at the end of movement; set false to
-	 *              remove power but do not brake.
-	 */
-	public void motorsOff(boolean brake) {
-		if (brake) {
-			leftMotor.stop(true);
-			rightMotor.stop(true);
-		} else {
-			leftMotor.flt(true);
-			rightMotor.flt(true);
+		} else if (powerLeft == powerRight) {
+			if (powerLeft < 0) {
+				// use negative degrees to turn backward
+				degrs = -degrs;
+			}
+			// rotate both motors the same
+			leftMotor.getMotor().rotate(degrs, true);
+			rightMotor.getMotor().rotate(degrs);
+			// at least float motors afterwards if specified
+			if (!brake) {
+				leftMotor.getMotor().flt(true);
+				rightMotor.getMotor().flt(false);
+			}
 		}
 	}
 }

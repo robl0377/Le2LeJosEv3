@@ -17,18 +17,28 @@ import lejos.hardware.port.Port;
  * @see EV3 Move Steering Block Explained,
  *      https://communities.theiet.org/blogs/698/1706
  */
-public class MoveSteeringUnregulated extends MoveBaseUnregulated {
+public class MoveSteeringUnregulated extends MoveBaseUnregulated implements IMoveSteering {
 
 	private static final Logger log = Logger.getLogger(MoveSteeringUnregulated.class.getName());
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param leftMotorPort
-	 * @param rightMotorPort
+	 * @param leftMotorPort  the left motor port.
+	 * @param rightMotorPort the right motor port.
 	 */
 	public MoveSteeringUnregulated(Port leftMotorPort, Port rightMotorPort) {
 		super(leftMotorPort, rightMotorPort);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param leftMotor  the left UnregulatedMotor.
+	 * @param rightMotor the right UnregulatedMotor.
+	 */
+	public MoveSteeringUnregulated(UnregulatedMotor leftMotor, UnregulatedMotor rightMotor) {
+		super(leftMotor, rightMotor);
 	}
 
 	/**
@@ -39,10 +49,8 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 	 * @param power    set power percentage (0..100); + forward; - backward.
 	 */
 	public void motorsOn(int steering, int power) {
-		int[] motorPower = new int[2];
-		calcPower(steering, power, motorPower);
-		setPower(motorPower[0], motorPower[1]);
-		startMotors();
+		int[] motorPower = calcPower(steering, power);
+		super.motorsOn(motorPower[0], motorPower[1]);
 	}
 
 	/**
@@ -57,15 +65,9 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 	 */
 	public void motorsOnForSeconds(int steering, int power, float period, boolean brake) {
 		if (period > 0) {
-			// setup motors and start them
-			int[] motorPower = new int[2];
-			calcPower(steering, power, motorPower);
-			setPower(motorPower[0], motorPower[1]);
-			startMotors();
-			// wait time in seconds
-			Wait.time(period);
-			// switch motors off
-			motorsOff(brake);
+			int[] motorPower = calcPower(steering, power);
+			// let motors run for the specified period then brake or float
+			super.motorsOnForSeconds(motorPower[0], motorPower[1], period, brake);
 		}
 	}
 
@@ -111,10 +113,9 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 	public void motorsOnForRotationsDegrees(int steering, int power, int rotations, int degrees, boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// setup motors
-			int[] motorPower = new int[2];
-			calcPower(steering, power, motorPower);
+			int[] motorPower = calcPower(steering, power);
 			setPower(motorPower[0], motorPower[1]);
-			// do the rotation
+			// do the rotation then brake or float
 			rotateMotors(motorPower[0], motorPower[1], rotations, degrees, brake);
 		}
 	}
@@ -122,12 +123,12 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 	/**
 	 * calculate motor power.
 	 * 
-	 * @param steering   set amount of steering (0..100); + for right; - for left;
-	 *                   100 means turn on the spot.
-	 * @param power      set power percentage (0..100); + forward; - backward.
-	 * @param motorPower array of 2 int: powerLeft and powerRight.
+	 * @param steering set amount of steering (0..100); + for right; - for left;
+	 *                 100 means turn on the spot.
+	 * @param power    set power percentage (0..100); + forward; - backward.
+	 * @retrun array of 2 int: powerLeft and powerRight.
 	 */
-	protected void calcPower(int steering, int power, int[] motorPower) {
+	protected int[] calcPower(int steering, int power) {
 		// limit the steering
 		if (steering < -100) {
 			steering = -100;
@@ -155,10 +156,12 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated {
 			// left turn
 			lmpwr = (int) (power * (1F + steering / 50F));
 		}
-		motorPower[0] = lmpwr;
-		motorPower[1] = rmpwr;
 		if (log.isLoggable(Level.FINEST)) {
 			log.finest("steering: " + steering + ", power: " + power + " -> left: " + lmpwr + ", right: " + rmpwr);
 		}
+		int[] motorPower = new int[2];
+		motorPower[0] = lmpwr;
+		motorPower[1] = rmpwr;
+		return motorPower;
 	}
 }

@@ -16,22 +16,26 @@ import lejos.hardware.port.Port;
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FUnregulatedMotor.html
  * @see https://ev3-help-online.api.education.lego.com/Education/en-us/page.html?Path=blocks%2FLEGO%2FRotationSensor.html
  */
-public class UnregulatedMotor {
+public class UnregulatedMotor implements IMotor {
 
 	private static final Logger log = Logger.getLogger(UnregulatedMotor.class.getName());
 
-	private Port motorPort = null;
-	private lejos.hardware.motor.UnregulatedMotor motor = null;
+	// the motor port
+	protected Port motorPort;
+	// the unregulated motor instance
+	protected lejos.hardware.motor.UnregulatedMotor motor = null;
 
 	// motor blocking timeout in degrees or rotations mode
-	private static final int BLOCK_TIMEOUT = 500;
+	protected static final int BLOCK_TIMEOUT = 500;
 
 	/**
 	 * Constructor.
+	 * handles the motor resources correctly before exiting
 	 * 
-	 * @param motorPort
+	 * @param motorPort the motor port.
 	 */
 	public UnregulatedMotor(Port motorPort) {
+		// store motor port
 		this.motorPort = motorPort;
 		// instantiate the motor object
 		motor = new lejos.hardware.motor.UnregulatedMotor(this.motorPort);
@@ -39,13 +43,45 @@ public class UnregulatedMotor {
 			// handle resources correctly before exiting
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 				public void run() {
-					// stop the motor and wait until done
-					motor.stop();
-					// close resources
-					motor.close();
+					close();
 				}
 			}));
 		}
+	}
+
+	/**
+	 * stop the motor and wait until done, then close resources and remove the
+	 * reference to the motor instance.
+	 */
+	protected void close() {
+		if (motor != null) {
+			// stop the motor and wait until done
+			motor.stop();
+			// close resources
+			motor.close();
+			motor = null;
+		}
+	}
+
+	/**
+	 * @return the motor
+	 */
+	lejos.hardware.motor.UnregulatedMotor getMotor() {
+		return motor;
+	}
+
+	/**
+	 * @return the motorPort; or null if not available.
+	 */
+	public Port getPort() {
+		return motorPort;
+	}
+
+	/**
+	 * @return the name of the motor port; or null if not available.
+	 */
+	public String getPortName() {
+		return (this.motorPort != null) ? this.motorPort.getName() : null;
 	}
 
 	/**
@@ -55,8 +91,8 @@ public class UnregulatedMotor {
 	 */
 	public void motorOn(int power) {
 		// setup motor and start it
-		motor.setPower(power);
-		motor.forward();
+		setPower(power);
+		start(power);
 	}
 
 	/**
@@ -68,49 +104,16 @@ public class UnregulatedMotor {
 	 *               power but do not brake.
 	 */
 	public void motorOnForSeconds(int power, float period, boolean brake) {
+		if (log.isLoggable(Level.FINEST)) {
+			log.log(Level.FINEST, "on for {0} sec", period);
+		}
 		// setup motor and start it
-		motor.setPower(power);
-		motor.forward();
+		setPower(power);
+		start(power);
 		// wait time in seconds
 		Wait.time(period);
 		// switch motor off
 		motorOff(brake);
-	}
-
-	/**
-	 * Motor Rotation Block: reset the motor's rotation to zero.
-	 */
-	public void rotationReset() {
-		motor.resetTachoCount();
-	}
-
-	/**
-	 * Motor Rotation Block: measure the current degrees turned since the last
-	 * reset.
-	 * 
-	 * @return the degrees.
-	 */
-	public int measureDegrees() {
-		return motor.getTachoCount();
-	}
-
-	/**
-	 * Motor Rotation Block: measure the number of rotations turned since the last
-	 * reset.
-	 * 
-	 * @return the rotations.
-	 */
-	public float measureRotations() {
-		return (motor.getTachoCount() / 360F);
-	}
-
-	/**
-	 * Motor Rotation Block: measure the current power level of the motor.
-	 * 
-	 * @return the current power level.
-	 */
-	public int measureCurrentPower() {
-		return motor.getPower();
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class UnregulatedMotor {
 	 */
 	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
-			// setup motor and start it
+			// setup motor power
 			motor.setPower(power);
 			// get start tacho count of the motor
 			int mstc = motor.getTachoCount();
@@ -156,6 +159,9 @@ public class UnregulatedMotor {
 			long mstct = System.currentTimeMillis();
 			// calculate the degrees to turn
 			int degrs = (rotations * 360) + degrees;
+			if (log.isLoggable(Level.FINEST)) {
+				log.log(Level.FINEST, "rotate {0} deg.", degrs);
+			}
 			// calculate the degrees to turn to
 			int metc = (power > 0) ? (mstc + degrs) : (mstc - degrs);
 			if (log.isLoggable(Level.FINEST)) {
@@ -163,7 +169,7 @@ public class UnregulatedMotor {
 			}
 
 			// start motor
-			motor.forward();
+			start(power);
 
 			int mtc = 0; // newest sample
 			long mtct = 0L; // newest timestamp
@@ -202,7 +208,7 @@ public class UnregulatedMotor {
 				// wait until motors have reached their number of degrees
 				if (pdg < 10) {
 					// nearly done: just wait it out
-					Thread.yield();
+					;
 
 				} else {
 					// wait by sleeping between samples
@@ -234,9 +240,66 @@ public class UnregulatedMotor {
 	}
 
 	/**
-	 * @return the name of the motor port; or null if not available.
+	 * Motor Rotation Block: reset the motor's rotation to zero.
 	 */
-	public String getPortName() {
-		return (this.motorPort != null) ? this.motorPort.getName() : null;
+	public void rotationReset() {
+		motor.resetTachoCount();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current degrees turned since the last
+	 * reset.
+	 * 
+	 * @return the degrees.
+	 */
+	public int measureDegrees() {
+		return motor.getTachoCount();
+	}
+
+	/**
+	 * Motor Rotation Block: measure the number of rotations turned since the last
+	 * reset.
+	 * 
+	 * @return the rotations.
+	 */
+	public float measureRotations() {
+		return (motor.getTachoCount() / 360F);
+	}
+
+	/**
+	 * Motor Rotation Block: measure the current power level of the motor.
+	 * 
+	 * @return the current power level.
+	 */
+	public int measureCurrentPower() {
+		return getPower();
+	}
+
+	/**
+	 * get current power level.
+	 * 
+	 * @return the power 0..100.
+	 */
+	protected int getPower() {
+		return motor.getPower();
+	}
+
+	/**
+	 * set the motor power level.
+	 * 
+	 * @param power the power to set, 0..100.
+	 */
+	protected void setPower(int power) {
+		// motor.setPower(Math.abs(power));
+		motor.setPower(power);
+	}
+
+	/**
+	 * start the motor.
+	 * 
+	 * @param power set power direction; + forward; 0 stop; - backward.
+	 */
+	protected void start(int power) {
+		motor.forward();
 	}
 }
