@@ -44,6 +44,7 @@ public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTan
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
 	 */
+	@Override
 	public void motorsOn(int powerLeft, int powerRight) {
 		int[] motorPower = calcPower(powerLeft, powerRight);
 		super.motorsOn(motorPower[0], motorPower[1]);
@@ -58,6 +59,7 @@ public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTan
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForSeconds(int powerLeft, int powerRight, float period, boolean brake) {
 		if (period > 0) {
 			int[] motorPower = calcPower(powerLeft, powerRight);
@@ -75,7 +77,22 @@ public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTan
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForRotations(int powerLeft, int powerRight, int rotations, boolean brake) {
+		motorsOnForRotationsDegrees(powerLeft, powerRight, rotations, 0, brake);
+	}
+
+	/**
+	 * let left and right motors run for the specified number of rotations.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	@Override
+	public void motorsOnForRotations(int powerLeft, int powerRight, float rotations, boolean brake) {
 		motorsOnForRotationsDegrees(powerLeft, powerRight, rotations, 0, brake);
 	}
 
@@ -88,6 +105,7 @@ public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTan
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForDegrees(int powerLeft, int powerRight, int degrees, boolean brake) {
 		motorsOnForRotationsDegrees(powerLeft, powerRight, 0, degrees, brake);
 	}
@@ -102,7 +120,28 @@ public class MoveTankUnregulated extends MoveBaseUnregulated implements IMoveTan
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForRotationsDegrees(int powerLeft, int powerRight, int rotations, int degrees, boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// setup motors
+			int[] motorPower = calcPower(powerLeft, powerRight);
+			// do the rotation then brake or float
+			super.motorsOnForRotationsDegrees(motorPower[0], motorPower[1], rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	@Override
+	public void motorsOnForRotationsDegrees(int powerLeft, int powerRight, float rotations, int degrees, boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// setup motors
 			int[] motorPower = calcPower(powerLeft, powerRight);

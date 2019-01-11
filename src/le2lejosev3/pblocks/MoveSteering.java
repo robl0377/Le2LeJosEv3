@@ -48,6 +48,7 @@ public class MoveSteering extends MoveBase implements IMoveSteering {
 	 *                 means turn on the spot.
 	 * @param power    set power percentage (0..100); + forward; - backward.
 	 */
+	@Override
 	public void motorsOn(int steering, int power) {
 		int[] motorPower = calcPower(steering, power);
 		super.motorsOn(motorPower[0], motorPower[1]);
@@ -63,6 +64,7 @@ public class MoveSteering extends MoveBase implements IMoveSteering {
 	 * @param brake    set true to brake at the end of movement; set false to
 	 *                 remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForSeconds(int steering, int power, float period, boolean brake) {
 		if (period > 0) {
 			// setup motors and start them
@@ -82,7 +84,23 @@ public class MoveSteering extends MoveBase implements IMoveSteering {
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForRotations(int steering, int power, int rotations, boolean brake) {
+		motorsOnForRotationsDegrees(steering, power, rotations, 0, brake);
+	}
+
+	/**
+	 * let left and right motors run for the specified number of rotations.
+	 * 
+	 * @param steering  set amount of steering (0..100); + for right; - for left;
+	 *                  100 means turn on the spot.
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
+	public void motorsOnForRotations(int steering, int power, float rotations, boolean brake) {
 		motorsOnForRotationsDegrees(steering, power, rotations, 0, brake);
 	}
 
@@ -96,6 +114,7 @@ public class MoveSteering extends MoveBase implements IMoveSteering {
 	 * @param brake    set true to brake at the end of movement; set false to
 	 *                 remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForDegrees(int steering, int power, int degrees, boolean brake) {
 		motorsOnForRotationsDegrees(steering, power, 0, degrees, brake);
 	}
@@ -111,7 +130,30 @@ public class MoveSteering extends MoveBase implements IMoveSteering {
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
+	@Override
 	public void motorsOnForRotationsDegrees(int steering, int power, int rotations, int degrees, boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// setup motors
+			int[] motorPower = calcPower(steering, power);
+			setPower(motorPower[0], motorPower[1]);
+			// do the rotation then brake or float
+			rotateMotors(motorPower[0], motorPower[1], rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param steering  set amount of steering (0..100); + for right; - for left;
+	 *                  100 means turn on the spot.
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations of the motor (> 0).
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
+	public void motorsOnForRotationsDegrees(int steering, int power, float rotations, int degrees, boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// setup motors
 			int[] motorPower = calcPower(steering, power);

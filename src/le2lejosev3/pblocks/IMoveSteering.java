@@ -45,6 +45,18 @@ public interface IMoveSteering extends IMoveRotation {
 	public void motorsOnForRotations(int steering, int power, int rotations, boolean brake);
 
 	/**
+	 * let left and right motors run for the specified number of rotations.
+	 * 
+	 * @param steering  set amount of steering (0..100); + for right; - for left;
+	 *                  100 means turn on the spot.
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorsOnForRotations(int steering, int power, float rotations, boolean brake);
+
+	/**
 	 * let left and right motors run for the specified number of degrees.
 	 * 
 	 * @param steering set amount of steering (0..100); + for right; - for left;
@@ -68,6 +80,19 @@ public interface IMoveSteering extends IMoveRotation {
 	 *                  remove power but do not brake.
 	 */
 	public void motorsOnForRotationsDegrees(int steering, int power, int rotations, int degrees, boolean brake);
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param steering  set amount of steering (0..100); + for right; - for left;
+	 *                  100 means turn on the spot.
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations of the motor (> 0).
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorsOnForRotationsDegrees(int steering, int power, float rotations, int degrees, boolean brake);
 
 	/**
 	 * stop left and right motors.

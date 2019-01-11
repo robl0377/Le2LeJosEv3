@@ -111,7 +111,7 @@ public class MoveBase implements IMoveRotation {
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
-	protected void motorsOnForRotationsDegrees(int powerLeft, int powerRight, int rotations, int degrees,
+	protected void motorsOnForRotationsDegrees(int powerLeft, int powerRight, float rotations, int degrees,
 			boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// do the rotation
@@ -133,6 +133,7 @@ public class MoveBase implements IMoveRotation {
 	/**
 	 * Motor Rotation Block: reset the left motor's rotation to zero.
 	 */
+	@Override
 	public void rotationResetLeft() {
 		leftMotor.rotationReset();
 	}
@@ -140,6 +141,7 @@ public class MoveBase implements IMoveRotation {
 	/**
 	 * Motor Rotation Block: reset the right motor's rotation to zero.
 	 */
+	@Override
 	public void rotationResetRight() {
 		rightMotor.rotationReset();
 	}
@@ -150,6 +152,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the degrees.
 	 */
+	@Override
 	public int measureDegreesLeft() {
 		return leftMotor.measureDegrees();
 	}
@@ -160,6 +163,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the degrees.
 	 */
+	@Override
 	public int measureDegreesRight() {
 		return rightMotor.measureDegrees();
 	}
@@ -170,6 +174,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the rotations.
 	 */
+	@Override
 	public float measureRotationsLeft() {
 		return (leftMotor.measureDegrees() / 360F);
 	}
@@ -180,6 +185,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the rotations.
 	 */
+	@Override
 	public float measureRotationsRight() {
 		return (rightMotor.measureDegrees() / 360F);
 	}
@@ -189,6 +195,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the current power level (0..100).
 	 */
+	@Override
 	public int measureCurrentPowerLeft() {
 		return leftMotor.measureCurrentPower();
 	}
@@ -198,6 +205,7 @@ public class MoveBase implements IMoveRotation {
 	 * 
 	 * @return the current power level (0..100).
 	 */
+	@Override
 	public int measureCurrentPowerRight() {
 		return rightMotor.measureCurrentPower();
 	}
@@ -237,9 +245,9 @@ public class MoveBase implements IMoveRotation {
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
-	protected void rotateMotors(int powerLeft, int powerRight, int rotations, int degrees, boolean brake) {
+	protected void rotateMotors(int powerLeft, int powerRight, float rotations, int degrees, boolean brake) {
 		// calculate the degrees to turn
-		int degrs = (rotations * 360) + degrees;
+		int degrs = Math.round(rotations * 360F) + degrees;
 		if (log.isLoggable(Level.FINEST)) {
 			log.log(Level.FINEST, "rotate {0} deg.", degrs);
 		}

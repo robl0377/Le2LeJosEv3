@@ -42,6 +42,17 @@ public interface IMoveTank extends IMoveRotation {
 	public void motorsOnForRotations(int powerLeft, int powerRight, int rotations, boolean brake);
 
 	/**
+	 * let left and right motors run for the specified number of rotations.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	public void motorsOnForRotations(int powerLeft, int powerRight, float rotations, boolean brake);
+
+	/**
 	 * let left and right motors run for the specified number of degrees.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
@@ -63,6 +74,18 @@ public interface IMoveTank extends IMoveRotation {
 	 *                   remove power but do not brake.
 	 */
 	public void motorsOnForRotationsDegrees(int powerLeft, int powerRight, int rotations, int degrees, boolean brake);
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	public void motorsOnForRotationsDegrees(int powerLeft, int powerRight, float rotations, int degrees, boolean brake);
 
 	/**
 	 * stop left and right motors.

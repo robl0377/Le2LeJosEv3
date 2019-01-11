@@ -14,12 +14,12 @@ public interface IMotor extends IMotorRotation {
 	 * @return the motorPort; or null if not available.
 	 */
 	public Port getPort();
-	
+
 	/**
 	 * @return the name of the motor port; or null if not available.
 	 */
 	public String getPortName();
-	
+
 	/**
 	 * let motor run indefinitely and return immediately.
 	 * 
@@ -51,22 +51,51 @@ public interface IMotor extends IMotorRotation {
 	 * let motor run the specified number of rotations.
 	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations (> 0).
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	public void motorOnForRotations(int power, int rotations, boolean brake);
 
 	/**
+	 * let motor run the specified number of rotations.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorOnForRotations(int power, float rotations, boolean brake);
+
+	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations (> 0).
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
 	 * @param degrees   number of degrees (> 0).
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake);
+
+	/**
+	 * let motor run the specified number of rotations and degrees.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	public void motorOnForRotationsDegrees(int power, float rotations, int degrees, boolean brake);
 
 	/**
 	 * stop motor.
