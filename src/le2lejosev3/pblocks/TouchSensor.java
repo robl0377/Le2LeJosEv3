@@ -27,7 +27,10 @@ public class TouchSensor {
 	private EV3TouchSensor sensor = null;
 	private SampleProvider sp = null;
 	private float[] sample = null;
-	private boolean pressed = false;
+
+	// bumped status detection
+	private boolean ostate = false;
+	private boolean bumped = false;
 
 	/**
 	 * Constructor.
@@ -65,26 +68,32 @@ public class TouchSensor {
 	 * Fetch and compare the sensor state.
 	 * 
 	 * @param state the sensor state to compare to; one of RELEASED, PRESSED, or
-	 *              BUMPED.
+	 *              BUMPED; Bumped means the button has been pressed and released in
+	 *              the past; The next Bumped occurrence will then require a new
+	 *              press and release.
 	 * @return true if the the sensor state matches the specified one; false
 	 *         otherwise.
 	 */
 	public boolean compareState(int state) {
 		boolean result = false;
 		// get current state of sensor
-		boolean sample = measureState();
+		boolean currstate = measureState();
 		// check result
 		switch (state) {
 		case RELEASED:
-			result = !sample;
+			result = !currstate;
 			break;
 		case PRESSED:
-			result = sample;
-			pressed = sample;
+			result = currstate;
 			break;
 		case BUMPED:
-			result = !sample && pressed;
-			pressed = !sample;
+			// bumped occurs briefly when old state was pressed and current state is released
+			bumped = (ostate && !currstate);
+			if (currstate != ostate) {
+				// state change: store current state
+				ostate = currstate;
+			}
+			result = bumped;
 			break;
 		default:
 			throw new RuntimeException("Invalid State value: " + state);
