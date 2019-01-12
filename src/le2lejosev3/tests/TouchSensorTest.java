@@ -25,7 +25,7 @@ public class TouchSensorTest {
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
 	// the sensor configuration
-	static final Port touchSensorPort = SensorPort.S3;
+	static final Port touchSensorPort = SensorPort.S1;
 
 	/**
 	 * Main program entry point.
@@ -54,7 +54,7 @@ public class TouchSensorTest {
 			Display.textGrid("Touch: " + value + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Wait.time(0.1F);
+			Wait.time(0.01F);
 		}
 		// wait until button is released again
 		while (Button.ENTER.isDown()) {
@@ -64,14 +64,16 @@ public class TouchSensorTest {
 		// -----------------------------------------------
 		// wait until pressed
 		Display.textGrid("Pressed? ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
-		String status = null;
+		boolean status = false;
+		String statusText = null;
 		// run until button is pressed
 		while (Button.ENTER.isUp()) {
-			status = (touchSensor.compareState(TouchSensor.PRESSED) ? "PRESSED" : "     ");
+			status = touchSensor.compareState(TouchSensor.PRESSED);
+			statusText = (status ? "PRESSED" : "     ");
 			Display.textGrid("Status: " + status + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 			// wait until next value
-			Wait.time(0.1F);
+			Wait.time(0.01F);
 		}
 
 		// wait until button is released again
@@ -81,15 +83,15 @@ public class TouchSensorTest {
 
 		// -----------------------------------------------
 		// wait until bumped
-		// FIXME Does not work correctly
 		Display.textGrid("Bumped? ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// run until button is bumped
 		while (Button.ENTER.isUp()) {
-			status = (touchSensor.compareState(TouchSensor.BUMPED) ? "BUMPED" : "     ");
-			Display.textGrid("Status: " + status + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
+			status = touchSensor.compareState(TouchSensor.BUMPED);
+			statusText = (status ? "BUMPED" : "     ");
+			Display.textGrid("Status: " + statusText + "     ", false, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
-			// wait until next value
-			Wait.time(0.1F);
+			// wait until next value, but show bumped state for 1 second
+			Wait.time(status ? 1F : 0.1F);
 		}
 
 		log.fine("The End");
