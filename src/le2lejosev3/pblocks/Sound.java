@@ -80,7 +80,7 @@ public class Sound {
 			case WAIT:
 				// Play sound and wait until done
 				if (log.isLoggable(Level.FINEST)) {
-					log.log(Level.FINEST, "playSample: /resources/{0}", filename);
+					log.log(Level.FINEST, "/resources/{0}", filename);
 				}
 				int r = ((EV3Audio) EV3Audio.getAudio()).playSample(in, volume);
 				if (r < 0) {
@@ -106,7 +106,7 @@ public class Sound {
 				case WAIT:
 					// Play sound and wait until done
 					if (log.isLoggable(Level.FINEST)) {
-						log.log(Level.FINEST, "playSample: {0}", soundFile.getAbsolutePath());
+						log.log(Level.FINEST, soundFile.getAbsolutePath());
 					}
 					// int r = lejos.hardware.Sound.playSample(soundFile, volume);
 					int r = EV3Audio.getAudio().playSample(soundFile, volume);

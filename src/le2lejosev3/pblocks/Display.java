@@ -309,6 +309,9 @@ public class Display {
 		InputStream in = Display.class.getResourceAsStream("/resources/" + filename);
 		if (in != null) {
 			// resource found:
+			if (log.isLoggable(Level.FINEST)) {
+				log.log(Level.FINEST, "file: /resources/{0}", filename);
+			}
 			try {
 				Image img = Image.createImage(in);
 				if (clrScr) {
@@ -319,13 +322,10 @@ public class Display {
 
 			} catch (ArrayIndexOutOfBoundsException ie) {
 				// ignore that
-				// log.log(Level.WARNING,
-				// "Error displaying image file " + imageFile.getAbsolutePath() + ": " +
-				// ie.toString());
 
 			} catch (Exception ex) {
 				log.log(Level.WARNING,
-						"Cannot display image: /resources/" + filename + ": " + ex.toString(), ex);
+						"Cannot display image file: /resources/" + filename + ": " + ex.toString(), ex);
 
 			} finally {
 				if (in != null) {
@@ -344,6 +344,9 @@ public class Display {
 				InputStream fis = null;
 				try {
 					fis = new FileInputStream(imageFile);
+					if (log.isLoggable(Level.FINEST)) {
+						log.log(Level.FINEST, "file: {0}", imageFile.getAbsolutePath());
+					}
 					Image img = Image.createImage(fis);
 					if (clrScr) {
 						gLcd.clear();
@@ -353,13 +356,10 @@ public class Display {
 
 				} catch (ArrayIndexOutOfBoundsException ie) {
 					// ignore that
-					// log.log(Level.WARNING,
-					// "Error displaying image file " + imageFile.getAbsolutePath() + ": " +
-					// ie.toString());
 
 				} catch (Exception ex) {
 					log.log(Level.WARNING,
-							"Cannot display image: " + imageFile.getAbsolutePath() + ": " + ex.toString(), ex);
+							"Cannot display image file: " + imageFile.getAbsolutePath() + ": " + ex.toString(), ex);
 
 				} finally {
 					if (fis != null) {
