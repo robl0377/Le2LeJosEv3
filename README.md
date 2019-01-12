@@ -29,6 +29,7 @@ The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
 - Le2LeJosEv3-Znap (see https://github.com/robl0377/Le2LeJosEv3-Znap)
 - Le2LeJosEv3-ColorSorter (see https://github.com/robl0377/Le2LeJosEv3-ColorSorter)
 - Le2LeJosEv3-Puppy (see https://github.com/robl0377/Le2LeJosEv3-Puppy)
+- Le2LeJosEv3-Elephant (see https://github.com/robl0377/Le2LeJosEv3-Elephant)
 
 ---
 LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site.
