@@ -38,6 +38,10 @@ public class Display {
 	// the LCD instance
 	// private static final TextLCD tLcd = BrickFinder.getDefault().getTextLCD();
 	private static final GraphicsLCD gLcd = LocalEV3.get().getGraphicsLCD();
+	static {
+		// we do our own refresh
+		gLcd.setAutoRefresh(false);
+	}
 
 	/** the base directory for image files on the EV3 brick. */
 	public static final String IMAGE_DIR = "/home/lejos/lib/";
@@ -94,7 +98,7 @@ public class Display {
 	public static void textPixels(String text, boolean clrScr, int x, int y, boolean color, int font) {
 		if (clrScr) {
 			gLcd.clear();
-			gLcd.refresh();
+			//gLcd.refresh();
 		}
 		// set the font
 		Font fnt = null;
@@ -192,7 +196,7 @@ public class Display {
 	public static void shapesLine(boolean clrScr, int x1, int y1, int x2, int y2, boolean color) {
 		if (clrScr) {
 			gLcd.clear();
-			gLcd.refresh();
+			//gLcd.refresh();
 		}
 		// set the color
 		gLcd.setColor(color == COLOR_BLACK ? GraphicsLCD.BLACK : GraphicsLCD.WHITE);
@@ -217,7 +221,7 @@ public class Display {
 	public static void shapesCircle(boolean clrScr, int x, int y, int radius, boolean fill, boolean color) {
 		if (clrScr) {
 			gLcd.clear();
-			gLcd.refresh();
+			//gLcd.refresh();
 		}
 		// set the color
 		gLcd.setColor(color == COLOR_BLACK ? GraphicsLCD.BLACK : GraphicsLCD.WHITE);
@@ -253,7 +257,7 @@ public class Display {
 			boolean color) {
 		if (clrScr) {
 			gLcd.clear();
-			gLcd.refresh();
+			//gLcd.refresh();
 		}
 		// set the color
 		gLcd.setColor(color == COLOR_BLACK ? GraphicsLCD.BLACK : GraphicsLCD.WHITE);
@@ -281,7 +285,7 @@ public class Display {
 	public static void shapesPoint(boolean clrScr, int x, int y, boolean color) {
 		if (clrScr) {
 			gLcd.clear();
-			gLcd.refresh();
+			//gLcd.refresh();
 		}
 		// draw the pixel
 		gLcd.setPixel(x, y, color == COLOR_BLACK ? 1 : 0);
@@ -316,7 +320,7 @@ public class Display {
 				Image img = Image.createImage(in);
 				if (clrScr) {
 					gLcd.clear();
-					gLcd.refresh();
+					//gLcd.refresh();
 				}
 				gLcd.drawImage(img, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP);
 
@@ -350,7 +354,7 @@ public class Display {
 					Image img = Image.createImage(fis);
 					if (clrScr) {
 						gLcd.clear();
-						gLcd.refresh();
+						//gLcd.refresh();
 					}
 					gLcd.drawImage(img, x, y, GraphicsLCD.LEFT | GraphicsLCD.TOP);
 
