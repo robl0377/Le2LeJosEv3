@@ -133,6 +133,8 @@ public class MoveSteeringUtil {
 	static void steeringTest(IMoveSteering mst) {
 		// -----------------------------------------------
 		log.info("--- OnForSeconds");
+		Display.textGrid("Move Steering", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// Run left & right motors forward for 2.5 seconds then brake
 		log.fine("OnFor 2.5 seconds");
 		mst.motorsOnForSeconds(0, 75, 2.5F, true);
@@ -141,11 +143,14 @@ public class MoveSteeringUtil {
 		mst.rotationResetLeft();
 		mst.rotationResetRight();
 
-		// Wait 2 seconds
-		Wait.time(2F);
+		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		// Wait until button press
+		Button.waitForAnyPress();
 
 		// -----------------------------------------------
 		log.info("--- OnForRotations");
+		Display.textGrid("Move Steering", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("OnForRotations ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// Run left & right motors left for 3 rotations then brake
 		log.fine("OnFor 3 rotations");
 		mst.motorsOnForRotations(-25, 75, 3, true);
@@ -154,11 +159,14 @@ public class MoveSteeringUtil {
 		log.fine("Rotations left : " + mst.measureRotationsLeft());
 		log.fine("Rotations right: " + mst.measureRotationsRight());
 
-		// Wait 2 seconds
-		Wait.time(2F);
+		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		// Wait until button press
+		Button.waitForAnyPress();
 
 		// -----------------------------------------------
 		log.info("--- OnForDegrees");
+		Display.textGrid("Move Steering", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("OnForDegrees ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// Run left & right motors right on the spot for 180 degrees then don't brake
 		log.fine("OnFor 180 degrees");
 		mst.motorsOnForDegrees(100, 75, 180, false);
@@ -167,11 +175,14 @@ public class MoveSteeringUtil {
 		log.fine("Degrees left : " + mst.measureDegreesLeft());
 		log.fine("Degrees right: " + mst.measureDegreesRight());
 
-		// Wait 2 seconds
-		Wait.time(2F);
+		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		// Wait until button press
+		Button.waitForAnyPress();
 
 		// -----------------------------------------------
 		log.info("--- On");
+		Display.textGrid("Move Steering", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid("On 2 sec.", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// Run left & right motors left
 		log.fine("On");
 		mst.motorsOn(-50, 75);
@@ -186,5 +197,9 @@ public class MoveSteeringUtil {
 		log.fine("Off");
 		mst.motorsOff(false);
 		log.fine("done");
+
+		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		// Wait until button press
+		Button.waitForAnyPress();
 	}
 }

@@ -21,8 +21,8 @@ public class MoveSteeringUnregTest {
 	private static Class<?> clazz = MoveSteeringUnregTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port leftMotorPort = MotorPort.A;
-	static final Port rightMotorPort = MotorPort.D;
+	static final Port leftMotorPort = MotorPort.B;
+	static final Port rightMotorPort = MotorPort.C;
 
 	/**
 	 * @param args

@@ -236,7 +236,8 @@ public class MoveBase implements IMoveRotation {
 	 * Rotate.
 	 * The motor with the bigger power is monitored for the degrees and the other
 	 * motor is simply switched on. Afer reaching the specified degrees, the other
-	 * motor is switched off.
+	 * motor is switched off. If both motors get the same power setting, both are
+	 * rotated equally.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
@@ -256,53 +257,45 @@ public class MoveBase implements IMoveRotation {
 		rightMotor.setPower(powerRight);
 		// determine which motor has the bigger power and thus should be monitored for
 		// the degrees
-		if (Math.abs(powerLeft) > Math.abs(powerRight)) {
-			// rotate left motor and then brake or float it (don't wait for motor stop)
-			if (powerLeft < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
+		int apl = Math.abs(powerLeft);
+		int apr = Math.abs(powerRight);
+		if (apl > apr) {
 			// switch right motor on
 			rightMotor.start(powerRight);
-			// start motor and rotate the specified number of degrees and brake afterwards.
+			// rotate left motor and then brake or float it (wait for motor stop)
+			// use negative degrees to turn backward
 			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
 			// regulator 'newMove' method. It would correspond to our brake parameter.
 			// Instead LeJOS always brakes the motor after rotations.
-			leftMotor.getMotor().rotate(degrs, false);
+			leftMotor.getMotor().rotate(((powerLeft < 0) ? -degrs : degrs), false);
 			// brake or float right motor afterwards (don't wait for motor stop)
 			rightMotor.motorOff(brake, true);
 			// at least float motor afterwards if specified
 			if (!brake) {
 				leftMotor.getMotor().flt(true);
 			}
-
-		} if (Math.abs(powerLeft) < Math.abs(powerRight)) {
-			// rotate right motor and then brake or float it (don't wait for motor stop)
-			if (powerRight < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
+		}
+		if (apl < apr) {
 			// switch left motor on
 			leftMotor.start(powerLeft);
-			// start motor and rotate the specified number of degrees and brake afterwards.
+			// rotate right motor and then brake or float it (wait for motor stop)
+			// use negative degrees to turn backward
 			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
 			// regulator 'newMove' method. It would correspond to our brake parameter.
 			// Instead LeJOS always brakes the motor after rotations.
-			rightMotor.getMotor().rotate(degrs, false);
+			rightMotor.getMotor().rotate(((powerRight < 0) ? -degrs : degrs), false);
 			// brake or float left motor afterwards (don't wait for motor stop)
 			leftMotor.motorOff(brake, true);
-			// at least float motor afterwards if specified
+			// at least float right motor afterwards if specified
 			if (!brake) {
 				rightMotor.getMotor().flt(true);
 			}
-		} else if (powerLeft == powerRight) {
-			if (powerLeft < 0) {
-				// use negative degrees to turn backward
-				degrs = -degrs;
-			}
-			// rotate both motors the same
-			leftMotor.getMotor().rotate(degrs, true);
-			rightMotor.getMotor().rotate(degrs);
+
+		} else if (apl == apr) {
+			// rotate left motor, use negative degrees to turn backward  (don't wait for motor stop)
+			leftMotor.getMotor().rotate(((powerLeft < 0) ? -degrs : degrs), true);
+			// rotate right motor, use negative degrees to turn backward  (wait for motor stop)
+			rightMotor.getMotor().rotate(((powerRight < 0) ? -degrs : degrs), false);
 			// at least float motors afterwards if specified
 			if (!brake) {
 				leftMotor.getMotor().flt(true);

@@ -236,7 +236,8 @@ public class MoveBaseUnregulated implements IMoveRotation {
 	 * Rotate.
 	 * The motor with the bigger power is monitored for the degrees and the other
 	 * motor is simply switched on. Afer reaching the specified degrees, the other
-	 * motor is switched off.
+	 * motor is switched off. If both motors get the same power setting, the left
+	 * one is monitored for the degrees.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
 	 * @param powerRight set power percentage (0..100); + forward; - backward.
