@@ -233,8 +233,10 @@ public class EV3Audio implements Audio
     
     public void writePCMSamples(byte[] data, int offset, int dataLength)
     {
-        if (PCMSampleSize == 0)
-            throw new UnsupportedOperationException("Sample size not set did you call startPCMPlayback");
+        // check for playback aborted
+        if (PCMSampleSize == 0) return;
+        //if (PCMSampleSize == 0)
+        //    throw new UnsupportedOperationException("Sample size not set did you call startPCMPlayback");
         if (PCMSampleSize == 8)
         {
             // non native sample size need to convert

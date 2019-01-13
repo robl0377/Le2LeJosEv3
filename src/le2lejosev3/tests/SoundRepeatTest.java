@@ -29,7 +29,7 @@ public class SoundRepeatTest {
 	public static void main(String[] args) {
 		// setup logging to file for all levels
 		Setup.log2File(clazz, Level.ALL);
-		log.fine("Starting ...");
+		log.info("Starting ...");
 
 		// -----------------------------------------------
 		// play tone in background until keypress
@@ -38,16 +38,17 @@ public class SoundRepeatTest {
 		Display.textGrid("Playing:" + freq + "Hz", true, 0, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press Button", false, 0, 5, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
-		// play tone
-		log.fine("Playing " + freq + "Hz");
+		// play tone repeatedly in background
+		log.info("Playing " + freq + "Hz");
 		Sound.playTone(freq, 0.12F, 80, Sound.REPEAT);
-		log.fine("Playing done");
+		log.info("playTone returned");
 
 		// Wait until button press
 		Button.waitForAnyPress();
-
 		// Stop tone
+		log.info("stop playing");
 		Sound.stop();
+		log.info("stop returned");
 
 		// -----------------------------------------------
 		// play sound file in background until keypress
@@ -57,16 +58,17 @@ public class SoundRepeatTest {
 		Display.textGrid(soundFile, false, 2, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press Button", false, 0, 5, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
-		// play sound file once and wait until done
-		log.fine("Playing " + soundFile);
+		// play sound file in background
+		log.info("Playing " + soundFile);
 		Sound.playFile(soundFile, 100, Sound.REPEAT);
-		log.fine("Playing done");
+		log.info("playFile returned");
 
 		// Wait until button press
 		Button.waitForAnyPress();
-
-		// Stop tone
+		// Stop playing sound file
+		log.info("stop playing");
 		Sound.stop();
+		log.info("stop returned");
 
 		// -----------------------------------------------
 		// play sound resource in background until keypress
@@ -76,18 +78,33 @@ public class SoundRepeatTest {
 		Display.textGrid(soundRes, false, 2, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("Press Button", false, 0, 5, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
-		// play sound file once and wait until done
-		log.fine("Playing " + soundRes);
+		// play sound file in background
+		log.info("Playing " + soundRes);
 		Sound.playFile(soundRes, 100, Sound.REPEAT);
-		log.fine("Playing done");
+		log.info("playFile returned");
 
 		// Wait until button press
 		Button.waitForAnyPress();
 
-		// Stop tone
-		Sound.stop();
+		// Stop playing sound file
+		// log.info("stop playing");
+		// Sound.stop();
+		// log.info("stop returned");
 
-		log.fine("The End");
+		// -----------------------------------------------
+		// play sound file in foreground and wait until done
+		// this stops the playing of the previous sound file in background
+		soundRes = "Blue";
+		// display name and hint
+		Display.textGrid("Playing:", true, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
+		Display.textGrid(soundRes, false, 2, 3, Display.COLOR_BLACK, Display.FONT_NORMAL);
+
+		// play sound file in foreground and wait until done
+		log.info("Playing " + soundRes);
+		Sound.playFile(soundRes, 100, Sound.WAIT);
+		log.info("playFile returned");
+
+		log.info("The End");
 	}
 
 }

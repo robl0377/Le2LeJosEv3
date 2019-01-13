@@ -76,6 +76,8 @@ public class Sound {
 		InputStream in = Sound.class.getResourceAsStream("/resources/" + filename);
 		if (in != null) {
 			// resource found:
+			// stop background sound immediately
+			soundthread.quiet();
 			switch (playType) {
 			case WAIT:
 				// Play sound and wait until done
@@ -102,6 +104,8 @@ public class Sound {
 			File soundFile = new File(SOUND_DIR, filename);
 			if (soundFile.canRead()) {
 				// file found
+				// stop background sound immediately
+				soundthread.quiet();
 				switch (playType) {
 				case WAIT:
 					// Play sound and wait until done
@@ -141,6 +145,8 @@ public class Sound {
 	 */
 	public static void playTone(int frequency, float duration, int volume, int playType) {
 		int durMs = Math.round(duration * 1000);
+		// stop background sound immediately
+		soundthread.quiet();
 		switch (playType) {
 		case WAIT:
 			// Play tone and wait until done
@@ -204,6 +210,8 @@ public class Sound {
 		}
 		int frequency = calcFreq(note);
 		int durMs = Math.round(duration * 1000);
+		// stop background sound immediately
+		soundthread.quiet();
 		// Play tone and wait until done
 		// lejos.hardware.Sound.playNote(instr, frequency, durMs);
 		EV3Audio.getAudio().playNote(instr, frequency, durMs);
@@ -323,6 +331,11 @@ public class Sound {
 				this.volume = 0;
 				this.repeat = false;
 			}
+			if (log.isLoggable(Level.FINEST)) {
+				log.log(Level.FINEST, "endPCMPlayback");
+			}
+			// stop sound
+			((EV3Audio) EV3Audio.getAudio()).endPCMPlayback();
 		}
 
 		/**
