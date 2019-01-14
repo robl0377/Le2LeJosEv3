@@ -15,10 +15,10 @@ I plan to build further robots and port their LEGO® icon-based programs to LeJO
 
 ## How To Use
 If you want to use the _Le2LeJosEv3_ Library in your own LeJOS EV3 project, do one of the following:
-1. Just include the _le2lejosev3.jar_ file in your project's classpath. The LeJOS EV3 Eclipse plugin will download the _le2lejosev3.jar_ file to the EV3 brick automatically before running your program.
-2. Just copy the Java source files in the packages _le2lejosev3.pblocks_ and _le2lejosev3.logging_ into your project's source location.
+1. Include the _le2lejosev3.jar_ file in your Eclipse project's classpath. The LeJOS EV3 Eclipse plugin will download the _le2lejosev3.jar_ file to the EV3 Brick automatically before running your program.
+2. Copy the Java source files in the packages _le2lejosev3.pblocks_ and _le2lejosev3.logging_ into your project's source location.
 
-Anyways, the LeJOS EV3 Eclipse plugin will download the main program to the EV3 brick and run it there.
+Anyways, the LeJOS EV3 Eclipse plugin will download the main program to the EV3 Brick and run it there.
 
 ## Projects
 The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
@@ -30,6 +30,7 @@ The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
 - Le2LeJosEv3-ColorSorter (see https://github.com/robl0377/Le2LeJosEv3-ColorSorter)
 - Le2LeJosEv3-Puppy (see https://github.com/robl0377/Le2LeJosEv3-Puppy)
 - Le2LeJosEv3-Elephant (see https://github.com/robl0377/Le2LeJosEv3-Elephant)
+- Le2LeJosEv3-Ev3rStorm (see https://github.com/robl0377/Le2LeJosEv3-Ev3rStorm)
 
 ---
 LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site.
