@@ -31,6 +31,7 @@ The following projects - that I am aware of - use the _Le2LeJosEv3_ Library:
 - Le2LeJosEv3-Puppy (see https://github.com/robl0377/Le2LeJosEv3-Puppy)
 - Le2LeJosEv3-Elephant (see https://github.com/robl0377/Le2LeJosEv3-Elephant)
 - Le2LeJosEv3-Ev3rStorm (see https://github.com/robl0377/Le2LeJosEv3-Ev3rStorm)
+- Le2LeJosEv3-Ev3Meg (see https://github.com/robl0377/Le2LeJosEv3-Ev3Meg)
 
 ---
 LEGO® is a trademark of the LEGO Group of companies which does not sponsor, authorize or endorse this site.
