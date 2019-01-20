@@ -113,7 +113,7 @@ class RegulatedMotor implements IMotor {
 	 * 
 	 * @param power set power percentage (0..100); + forward; - backward.
 	 */
-	public void UnregulatedOn(int power) {
+	public void unregulatedOn(int power) {
 		// TODO implement unregulated motor on somehow
 		setPower(power);
 		start(power);
@@ -124,7 +124,7 @@ class RegulatedMotor implements IMotor {
 	 * 
 	 * @param power set power percentage (0..100); + forward; - backward.
 	 */
-	public void UnregulatedOn(float power) {
+	public void unregulatedOn(float power) {
 		// TODO implement unregulated motor on somehow
 		setPower(power);
 		start(power);
