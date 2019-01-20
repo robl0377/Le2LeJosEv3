@@ -37,6 +37,6 @@ public interface IMotorRotation {
 	 * 
 	 * @return the current power level.
 	 */
-	public int measureCurrentPower();
+	public float measureCurrentPower();
 
 }

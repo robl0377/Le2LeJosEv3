@@ -131,13 +131,17 @@ public class MoveSteeringUtil {
 	 * @param mst the MoveSteering instance
 	 */
 	static void steeringTest(IMoveSteering mst) {
+		long etim, stim;
 		// -----------------------------------------------
 		log.info("--- OnForSeconds");
 		Display.textGrid("Move Steering", true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// Run left & right motors forward for 2.5 seconds then brake
 		log.fine("OnFor 2.5 seconds");
+		stim = System.currentTimeMillis();
 		mst.motorsOnForSeconds(0, 75, 2.5F, true);
+		etim = System.currentTimeMillis();
+		log.fine("motorsOnFor 2.5 Seconds: " + (etim - stim) + "ms"); // about 100ms
 		log.fine("done");
 		// reset rotation
 		mst.rotationResetLeft();

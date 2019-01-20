@@ -196,7 +196,7 @@ public class MoveBaseUnregulated implements IMoveRotation {
 	 * @return the current power level (0..100).
 	 */
 	@Override
-	public int measureCurrentPowerLeft() {
+	public float measureCurrentPowerLeft() {
 		return leftMotor.measureCurrentPower();
 	}
 
@@ -206,7 +206,7 @@ public class MoveBaseUnregulated implements IMoveRotation {
 	 * @return the current power level (0..100).
 	 */
 	@Override
-	public int measureCurrentPowerRight() {
+	public float measureCurrentPowerRight() {
 		return rightMotor.measureCurrentPower();
 	}
 

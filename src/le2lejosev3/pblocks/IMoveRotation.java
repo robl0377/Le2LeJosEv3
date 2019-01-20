@@ -58,13 +58,13 @@ public interface IMoveRotation {
 	 * 
 	 * @return the current power level (0..100).
 	 */
-	public int measureCurrentPowerLeft();
+	public float measureCurrentPowerLeft();
 
 	/**
 	 * Motor Rotation Block: measure the current power level of the right motor.
 	 * 
 	 * @return the current power level (0..100).
 	 */
-	public int measureCurrentPowerRight();
+	public float measureCurrentPowerRight();
 
 }

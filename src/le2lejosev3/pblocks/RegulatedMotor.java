@@ -97,11 +97,34 @@ class RegulatedMotor implements IMotor {
 	}
 
 	/**
+	 * let motor run indefinitely and return immediately.
+	 * 
+	 * @param power set power percentage (0..100); + forward; - backward.
+	 */
+	@Override
+	public void motorOn(float power) {
+		// setup motor and start it
+		setPower(power);
+		start(power);
+	}
+
+	/**
 	 * let motor run indefinitely unregulated and return immediately.
 	 * 
 	 * @param power set power percentage (0..100); + forward; - backward.
 	 */
 	public void UnregulatedOn(int power) {
+		// TODO implement unregulated motor on somehow
+		setPower(power);
+		start(power);
+	}
+
+	/**
+	 * let motor run indefinitely unregulated and return immediately.
+	 * 
+	 * @param power set power percentage (0..100); + forward; - backward.
+	 */
+	public void UnregulatedOn(float power) {
 		// TODO implement unregulated motor on somehow
 		setPower(power);
 		start(power);
@@ -130,6 +153,28 @@ class RegulatedMotor implements IMotor {
 	}
 
 	/**
+	 * let motor run the specified period in seconds.
+	 * 
+	 * @param power  set power percentage (0..100); + forward; - backward.
+	 * @param period the waiting time in seconds (> 0).
+	 * @param brake  set true to brake at the end of movement; set false to remove
+	 *               power but do not brake.
+	 */
+	@Override
+	public void motorOnForSeconds(float power, float period, boolean brake) {
+		if (log.isLoggable(Level.FINEST)) {
+			log.log(Level.FINEST, "on for {0} sec", period);
+		}
+		// setup motor and start it
+		setPower(power);
+		start(power);
+		// wait time in seconds
+		Wait.time(period);
+		// switch motor off
+		motorOff(brake);
+	}
+
+	/**
 	 * let motor run the specified number of degrees.
 	 * 
 	 * @param power   set power percentage (0..100); + forward; - backward.
@@ -139,6 +184,19 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForDegrees(int power, int degrees, boolean brake) {
+		motorOnForRotationsDegrees(power, 0, degrees, brake);
+	}
+
+	/**
+	 * let motor run the specified number of degrees.
+	 * 
+	 * @param power   set power percentage (0..100); + forward; - backward.
+	 * @param degrees number of degrees (> 0).
+	 * @param brake   set true to brake at the end of movement; set false to remove
+	 *                power but do not brake.
+	 */
+	@Override
+	public void motorOnForDegrees(float power, int degrees, boolean brake) {
 		motorOnForRotationsDegrees(power, 0, degrees, brake);
 	}
 
@@ -168,7 +226,37 @@ class RegulatedMotor implements IMotor {
 	 *                  remove power but do not brake.
 	 */
 	@Override
+	public void motorOnForRotations(float power, int rotations, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, 0, brake);
+	}
+
+	/**
+	 * let motor run the specified number of rotations.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
 	public void motorOnForRotations(int power, float rotations, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, 0, brake);
+	}
+
+	/**
+	 * let motor run the specified number of rotations.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
+	public void motorOnForRotations(float power, float rotations, boolean brake) {
 		motorOnForRotationsDegrees(power, rotations, 0, brake);
 	}
 
@@ -188,6 +276,21 @@ class RegulatedMotor implements IMotor {
 		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
 	}
 
+	/**
+	 * let motor run the specified number of rotations and degrees.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
+	public void motorOnForRotationsDegrees(float power, int rotations, int degrees, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+	}
 
 	/**
 	 * let motor run the specified number of rotations and degrees.
@@ -206,6 +309,22 @@ class RegulatedMotor implements IMotor {
 	}
 
 	/**
+	 * let motor run the specified number of rotations and degrees.
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 */
+	@Override
+	public void motorOnForRotationsDegrees(float power, float rotations, int degrees, boolean brake) {
+		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+	}
+
+	/**
 	 * let motor run the specified number of rotations and degrees (wait until turn is complete).
 	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
@@ -218,6 +337,22 @@ class RegulatedMotor implements IMotor {
 	 * @param immediateReturn true means don't wait for motor stop; false otherwise.
 	 */
 	public void motorOnForRotationsDegrees(int power, float rotations, int degrees, boolean brake, boolean immediateReturn) {
+		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+	}
+
+	/**
+	 * let motor run the specified number of rotations and degrees (wait until turn is complete).
+	 * 
+	 * @param power     set power percentage (0..100); + forward; - backward.
+	 * @param rotations number of rotations; it seems that the LEGO Programming
+	 *                  block also accepts a negative number of rotations for
+	 *                  backward movement.
+	 * @param degrees   number of degrees (> 0).
+	 * @param brake     set true to brake at the end of movement; set false to
+	 *                  remove power but do not brake.
+	 * @param immediateReturn true means don't wait for motor stop; false otherwise.
+	 */
+	public void motorOnForRotationsDegrees(float power, float rotations, int degrees, boolean brake, boolean immediateReturn) {
 		if (rotations < 0) {
 			// set reverse power and positive rotations
 			power = -Math.abs(power);
@@ -309,7 +444,7 @@ class RegulatedMotor implements IMotor {
 	 * @return the current power level.
 	 */
 	@Override
-	public int measureCurrentPower() {
+	public float measureCurrentPower() {
 		return getPower();
 	}
 
@@ -319,8 +454,8 @@ class RegulatedMotor implements IMotor {
 	 * 
 	 * @return the power 0..100.
 	 */
-	protected int getPower() {
-		return Math.round(100F * motor.getSpeed() / motor.getMaxSpeed());
+	protected float getPower() {
+		return 100F * motor.getSpeed() / motor.getMaxSpeed();
 	}
 
 	/**
@@ -336,11 +471,36 @@ class RegulatedMotor implements IMotor {
 	}
 
 	/**
+	 * set the motor power level.
+	 * calculates a speed that corresponds to the power level.
+	 * 
+	 * @param power the power to set, 0..100.
+	 */
+	protected void setPower(float power) {
+		// calculate the speed for the regulated motor
+		// (setSpeed takes the absolute value)
+		motor.setSpeed(power * motor.getMaxSpeed() / 100F);
+	}
+
+	/**
 	 * start the motor.
 	 * 
 	 * @param power set power direction; + forward; 0 stop; - backward.
 	 */
 	protected void start(int power) {
+		if (power > 0) {
+			motor.forward();
+		}
+		if (power < 0) {
+			motor.backward();
+		}
+	}
+	/**
+	 * start the motor.
+	 * 
+	 * @param power set power direction; + forward; 0 stop; - backward.
+	 */
+	protected void start(float power) {
 		if (power > 0) {
 			motor.forward();
 		}

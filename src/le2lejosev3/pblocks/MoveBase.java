@@ -80,6 +80,17 @@ public class MoveBase implements IMoveRotation {
 	}
 
 	/**
+	 * let left and right motors run indefinitely and return immediately.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 */
+	protected void motorsOn(float powerLeft, float powerRight) {
+		setPower(powerLeft, powerRight);
+		startMotors(powerLeft, powerRight);
+	}
+
+	/**
 	 * let left and right motors run the specified period in seconds.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
@@ -89,6 +100,28 @@ public class MoveBase implements IMoveRotation {
 	 *                   remove power but do not brake.
 	 */
 	protected void motorsOnForSeconds(int powerLeft, int powerRight, float period, boolean brake) {
+		if (period > 0) {
+			// setup motors and start them
+			setPower(powerLeft, powerRight);
+			startMotors(powerLeft, powerRight);
+			// wait time in seconds
+			Wait.time(period);
+			// switch motors off
+			leftMotor.motorOff(brake, true);
+			rightMotor.motorOff(brake, true);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified period in seconds.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param period     the waiting time in seconds (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForSeconds(float powerLeft, float powerRight, float period, boolean brake) {
 		if (period > 0) {
 			// setup motors and start them
 			setPower(powerLeft, powerRight);
@@ -112,6 +145,60 @@ public class MoveBase implements IMoveRotation {
 	 *                   remove power but do not brake.
 	 */
 	protected void motorsOnForRotationsDegrees(int powerLeft, int powerRight, float rotations, int degrees,
+			boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// do the rotation
+			rotateMotors(powerLeft, powerRight, rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForRotationsDegrees(float powerLeft, int powerRight, float rotations, int degrees,
+			boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// do the rotation
+			rotateMotors(powerLeft, powerRight, rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForRotationsDegrees(int powerLeft, float powerRight, float rotations, int degrees,
+			boolean brake) {
+		if ((rotations > 0) || (degrees > 0)) {
+			// do the rotation
+			rotateMotors(powerLeft, powerRight, rotations, degrees, brake);
+		}
+	}
+
+	/**
+	 * let left and right motors run the specified number of rotations and degrees.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 * @param rotations  number of rotations of the motor (> 0).
+	 * @param degrees    number of degrees (> 0).
+	 * @param brake      set true to brake at the end of movement; set false to
+	 *                   remove power but do not brake.
+	 */
+	protected void motorsOnForRotationsDegrees(float powerLeft, float powerRight, float rotations, int degrees,
 			boolean brake) {
 		if ((rotations > 0) || (degrees > 0)) {
 			// do the rotation
@@ -196,7 +283,7 @@ public class MoveBase implements IMoveRotation {
 	 * @return the current power level (0..100).
 	 */
 	@Override
-	public int measureCurrentPowerLeft() {
+	public float measureCurrentPowerLeft() {
 		return leftMotor.measureCurrentPower();
 	}
 
@@ -206,7 +293,7 @@ public class MoveBase implements IMoveRotation {
 	 * @return the current power level (0..100).
 	 */
 	@Override
-	public int measureCurrentPowerRight() {
+	public float measureCurrentPowerRight() {
 		return rightMotor.measureCurrentPower();
 	}
 
@@ -222,12 +309,34 @@ public class MoveBase implements IMoveRotation {
 	}
 
 	/**
+	 * Set the power level for both motors.
+	 * 
+	 * @param powerLeft  set power percentage (0..100); + forward; - backward.
+	 * @param powerRight set power percentage (0..100); + forward; - backward.
+	 */
+	protected void setPower(float powerLeft, float powerRight) {
+		leftMotor.setPower(powerLeft);
+		rightMotor.setPower(powerRight);
+	}
+
+	/**
 	 * Start the motors forward or backward.
 	 * 
 	 * @param powerLeft  set power direction; + forward; 0 stop; - backward.
 	 * @param powerRight set power direction; + forward; 0 stop; - backward.
 	 */
 	protected void startMotors(int powerLeft, int powerRight) {
+		leftMotor.start(powerLeft);
+		rightMotor.start(powerRight);
+	}
+
+	/**
+	 * Start the motors forward or backward.
+	 * 
+	 * @param powerLeft  set power direction; + forward; 0 stop; - backward.
+	 * @param powerRight set power direction; + forward; 0 stop; - backward.
+	 */
+	protected void startMotors(float powerLeft, float powerRight) {
 		leftMotor.start(powerLeft);
 		rightMotor.start(powerRight);
 	}
@@ -246,7 +355,7 @@ public class MoveBase implements IMoveRotation {
 	 * @param brake      set true to brake at the end of movement; set false to
 	 *                   remove power but do not brake.
 	 */
-	protected void rotateMotors(int powerLeft, int powerRight, float rotations, int degrees, boolean brake) {
+	protected void rotateMotors(float powerLeft, float powerRight, float rotations, int degrees, boolean brake) {
 		// calculate the degrees to turn
 		int degrs = Math.round(rotations * 360F) + degrees;
 		if (log.isLoggable(Level.FINEST)) {
@@ -257,8 +366,8 @@ public class MoveBase implements IMoveRotation {
 		rightMotor.setPower(powerRight);
 		// determine which motor has the bigger power and thus should be monitored for
 		// the degrees
-		int apl = Math.abs(powerLeft);
-		int apr = Math.abs(powerRight);
+		float apl = Math.abs(powerLeft);
+		float apr = Math.abs(powerRight);
 		if (apl > apr) {
 			// switch right motor on
 			rightMotor.start(powerRight);
