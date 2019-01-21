@@ -54,6 +54,7 @@ public class InfraredSensor implements Change {
 	private SampleProvider sp = null;
 	private float[] sample = null;
 	private int[] seek = null;
+	private float[] seekF = null;
 	private boolean isRemote = false;
 
 	/** the modes of the EV3GyroSensor */
@@ -102,7 +103,7 @@ public class InfraredSensor implements Change {
 	}
 
 	/**
-	 * Fetch and return the proximity distance and the heading to the beacon.
+	 * Fetch and return the proximity distance and the heading to the beacon as int values.
 	 * 
 	 * @param channel the remote control channel (1..4).
 	 * @return array comprising of heading (-25..+25) in the 0th element, proximity
@@ -122,13 +123,53 @@ public class InfraredSensor implements Change {
 			}
 			sp.fetchSample(sample, 0);
 			int ix = (channel - 1) * 2;
+			// heading
 			seek[0] = (int) sample[ix++];
+			// proximity
 			seek[1] = (int) sample[ix];
 			if (seek[1] > 100) {
 				seek[1] = 100;
 			}
+			// detected
 			seek[2] = (sample[ix] == Float.POSITIVE_INFINITY) ? 0 : 1;
 			return seek;
+
+		} else {
+			throw new RuntimeException("Invalid Channel number: " + channel);
+		}
+	}
+
+	/**
+	 * Fetch and return the proximity distance and the heading to the beacon as float values.
+	 * 
+	 * @param channel the remote control channel (1..4).
+	 * @return array comprising of heading (-25..+25) in the 0th element, proximity
+	 *         (0..100) in the 1st element, and detected (1 for found or 0 for not
+	 *         found) in the 2nd element.
+	 */
+	public float[] measureBeaconF(int channel) {
+		if ((channel > 0) && (channel <= EV3IRSensor.IR_CHANNELS)) {
+			if ((sensor.getCurrentMode() != BEACON_MODE) || (sp == null) || isRemote) {
+				// switch to beacon mode
+				isRemote = false;
+				sp = sensor.getSeekMode();
+				sample = new float[sp.sampleSize()];
+				seekF = new float[3];
+				// wait a little bit
+				// Thread.sleep(SWITCHDELAY);
+			}
+			sp.fetchSample(sample, 0);
+			int ix = (channel - 1) * 2;
+			// heading
+			seekF[0] = sample[ix++];
+			// proximity
+			seekF[1] = sample[ix];
+			if (seekF[1] > 100F) {
+				seekF[1] = 100F;
+			}
+			// detected
+			seekF[2] = (sample[ix] == Float.POSITIVE_INFINITY) ? 0F : 1F;
+			return seekF;
 
 		} else {
 			throw new RuntimeException("Invalid Channel number: " + channel);
