@@ -23,6 +23,15 @@ public class Wait {
 	}
 
 	/**
+	 * Wait for a time in seconds.
+	 * 
+	 * @param period the waiting time in seconds.
+	 */
+	public static void time(int period) {
+		Delay.msDelay(period * 1000L);
+	}
+
+	/**
 	 * Wait for a time in seconds and measure it.
 	 * 
 	 * @param period the waiting time in seconds.
