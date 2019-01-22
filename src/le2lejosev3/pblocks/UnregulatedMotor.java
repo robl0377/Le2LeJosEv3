@@ -164,7 +164,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForDegrees(int power, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, 0, degrees, brake);
+		motorOnForRotationsDegrees(power, 0F, degrees, brake);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForDegrees(float power, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, 0, degrees, brake);
+		motorOnForRotationsDegrees(Math.round(power), 0F, degrees, brake);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(int power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
+		motorOnForRotationsDegrees(power, (float)rotations, 0, brake);
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(float power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
+		motorOnForRotationsDegrees(Math.round(power), (float)rotations, 0, brake);
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(float power, float rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
+		motorOnForRotationsDegrees(Math.round(power), rotations, 0, brake);
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake);
+		motorOnForRotationsDegrees(power, (float)rotations, degrees, brake);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(float power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake);
+		motorOnForRotationsDegrees(Math.round(power), (float)rotations, degrees, brake);
 	}
 
 	/**
