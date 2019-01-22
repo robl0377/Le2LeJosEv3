@@ -38,7 +38,8 @@ public class MediumMotorTest {
 		MediumMotor mot = new MediumMotor(motorPort);
 		log.fine("Created Medium IMotor at Port " + mot.getPortName());
 
-		MotorUtil.motorTest("Medium", mot);
+		MotorUtil.motorTest("Medium", mot, false);
+		MotorUtil.motorTest("Medium", mot, true);
 
 		log.fine("The End");
 	}
