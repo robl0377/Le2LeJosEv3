@@ -184,7 +184,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForDegrees(int power, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, 0, degrees, brake);
+		motorOnForRotationsDegrees(power, 0F, degrees, brake, false);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForDegrees(float power, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, 0, degrees, brake);
+		motorOnForRotationsDegrees(power, 0F, degrees, brake);
 	}
 
 	/**
@@ -212,7 +212,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(int power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
+		motorOnForRotationsDegrees(power, (float)rotations, 0, brake);
 	}
 
 	/**
@@ -227,7 +227,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(float power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, 0, brake);
+		motorOnForRotationsDegrees(power, (float)rotations, 0, brake);
 	}
 
 	/**
@@ -273,7 +273,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+		motorOnForRotationsDegrees(power, (float)rotations, degrees, brake, false);
 	}
 
 	/**
@@ -289,7 +289,7 @@ class RegulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(float power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+		motorOnForRotationsDegrees(power, (float)rotations, degrees, brake, false);
 	}
 
 	/**
@@ -337,7 +337,33 @@ class RegulatedMotor implements IMotor {
 	 * @param immediateReturn true means don't wait for motor stop; false otherwise.
 	 */
 	public void motorOnForRotationsDegrees(int power, float rotations, int degrees, boolean brake, boolean immediateReturn) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake, false);
+		if (rotations < 0) {
+			// set reverse power and positive rotations
+			power = -Math.abs(power);
+			rotations = Math.abs(rotations);
+		}
+		if ((rotations > 0) || (degrees > 0)) {
+			// setup motor power level
+			setPower(power);
+			// calculate the degrees to turn
+			int degrs = Math.round(rotations * 360F) + degrees;
+			if (log.isLoggable(Level.FINEST)) {
+				log.log(Level.FINEST, "rotate {0} deg.", degrs);
+			}
+			if (power < 0) {
+				// use negative degrees to turn backward
+				degrs = -degrs;
+			}
+			// start motor and rotate the specified number of degrees and brake afterwards.
+			// XXX Alas, LeJOS does not expose the hold parameter of the underlaying
+			// regulator 'newMove' method. It would correspond to our brake parameter.
+			// Instead LeJOS always brakes the motor after rotations.
+			motor.rotate(degrs);
+			// at least float motor afterwards if specified
+			if (!brake) {
+				motor.flt(immediateReturn);
+			}
+		}
 	}
 
 	/**
@@ -366,7 +392,7 @@ class RegulatedMotor implements IMotor {
 			if (log.isLoggable(Level.FINEST)) {
 				log.log(Level.FINEST, "rotate {0} deg.", degrs);
 			}
-			if (power < 0) {
+			if (power < 0F) {
 				// use negative degrees to turn backward
 				degrs = -degrs;
 			}
