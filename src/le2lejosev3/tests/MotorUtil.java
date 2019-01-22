@@ -24,9 +24,11 @@ class MotorUtil {
 	 * 
 	 * @param motType the type of motor; one of "Large", "Medium", or "Unreg.".
 	 * @param mot     the motor instance to test
+	 * @param useFloat set true for floating point values for power
 	 */
-	static void motorDegreesTest(String motType, IMotor mot) {
+	static void motorDegreesTest(String motType, IMotor mot, boolean useFloat) {
 		String banner = motType + " Motor " + mot.getPortName();
+		String ptyp = " (" + (useFloat ? "float" : "int") + ")";
 
 		// reset motor rotation
 		mot.rotationReset();
@@ -38,17 +40,25 @@ class MotorUtil {
 
 		// -----------------------------------------------
 		log.info("");
-		log.info("--- OnForDegrees sngl.");
+		log.info("--- OnForDegrees sngl." + ptyp);
 		Display.textGrid(banner, true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForDegrees sngl. ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		degxs = 75;
 		// run motor backward for degxs degrees and brake afterward
 		degs = mot.measureDegrees();
-		mot.motorOnForDegrees(-65, degxs, true);
+		if (useFloat) {
+			mot.motorOnForDegrees(-65.0F, degxs, true);
+		} else {
+			mot.motorOnForDegrees(-65, degxs, true);
+		}
 		dege = mot.measureDegrees();
 		// run motor forward to middle position
-		mot.motorOnForDegrees(65, degxs, true);
+		if (useFloat) {
+			mot.motorOnForDegrees(65.0F, degxs, true);
+		} else {
+			mot.motorOnForDegrees(65, degxs, true);
+		}
 		dege2 = mot.measureDegrees();
 		log.info("Motor started at " + degs + " degr.");
 		log.info("Motor stopped at " + dege + " degr.");
@@ -61,7 +71,7 @@ class MotorUtil {
 
 		// -----------------------------------------------
 		log.info("");
-		log.info("--- OnForDegrees mult.");
+		log.info("--- OnForDegrees mult." + ptyp);
 		Display.textGrid(banner, true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForDegrees mult. ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		// run motor forward and backward several times and brake afterward
@@ -71,7 +81,11 @@ class MotorUtil {
 		int[] dge = new int[dgx.length];
 		for (int i = 0; i < dgx.length; i++) {
 			dgs[i] = mot.measureDegrees();
-			mot.motorOnForDegrees(pwr[i], dgx[i], true);
+			if (useFloat) {
+				mot.motorOnForDegrees((float)pwr[i], dgx[i], true);
+			} else {
+				mot.motorOnForDegrees(pwr[i], dgx[i], true);
+			}
 			dge[i] = mot.measureDegrees();
 		}
 		log.info("Motor started at " + dgs[0] + " degr.");
@@ -90,7 +104,7 @@ class MotorUtil {
 
 		// -----------------------------------------------
 		log.info("");
-		log.info("--- OnForSeconds");
+		log.info("--- OnForSeconds" + ptyp);
 		Display.textGrid(banner, true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
@@ -98,10 +112,18 @@ class MotorUtil {
 		// run motor backward for 0.2 seconds and brake afterward
 		log.info("Motor start");
 		degs = mot.measureDegrees();
-		mot.motorOnForSeconds(-40, 0.2F, true);
+		if (useFloat) {
+			mot.motorOnForSeconds(-40.0F, 0.2F, true);
+		} else {
+			mot.motorOnForSeconds(-40, 0.2F, true);
+		}
 		dege = mot.measureDegrees();
 		// run motor forward for 0.2 seconds and brake afterward
-		mot.motorOnForSeconds(40, 0.2F, true);
+		if (useFloat) {
+			mot.motorOnForSeconds(40.0F, 0.2F, true);
+		} else {
+			mot.motorOnForSeconds(40, 0.2F, true);
+		}
 		dege2 = mot.measureDegrees();
 		log.info("Motor stop");
 		log.info("Motor started at " + degs + " degr.");
@@ -120,19 +142,25 @@ class MotorUtil {
 	 * 
 	 * @param motType the type of motor; one of "Large", "Medium", or "Unreg.".
 	 * @param mot     the motor instance to test
+	 * @param useFloat set true for floating point values for power
 	 */
-	static void motorTest(String motType, IMotor mot) {
+	static void motorTest(String motType, IMotor mot, boolean useFloat) {
 		String banner = motType + " Motor " + mot.getPortName();
+		String ptyp = " (" + (useFloat ? "float" : "int") + ")";
 
 		// -----------------------------------------------
 		log.info("");
-		log.info("--- OnForSeconds");
+		log.info("--- OnForSeconds" + ptyp);
 		Display.textGrid(banner, true, 0, 1, Display.COLOR_BLACK, Display.FONT_NORMAL);
 		Display.textGrid("OnForSeconds ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		// run motor backward for 0.9 seconds and brake afterward
 		log.fine("Motor start");
-		mot.motorOnForSeconds(-75, 0.9F, true);
+		if (useFloat) {
+			mot.motorOnForSeconds(-75.0F, 0.9F, true);
+		} else {
+			mot.motorOnForSeconds(-75, 0.9F, true);
+		}
 		log.fine("Motor stop");
 
 		// Wait 0.9 seconds
@@ -140,7 +168,11 @@ class MotorUtil {
 
 		// run motor forward for 0.9 seconds and brake afterward
 		log.fine("Motor start");
-		mot.motorOnForSeconds(75, 0.9F, true);
+		if (useFloat) {
+			mot.motorOnForSeconds(75.0F, 0.9F, true);
+		} else {
+			mot.motorOnForSeconds(75, 0.9F, true);
+		}
 		log.fine("Motor stop");
 
 		Display.textGrid("Press Button", false, 0, 6, Display.COLOR_BLACK, Display.FONT_NORMAL);
@@ -149,14 +181,18 @@ class MotorUtil {
 
 		// -----------------------------------------------
 		log.info("");
-		log.info("--- OnForDegrees");
+		log.info("--- OnForDegrees" + ptyp);
 		Display.textGrid("OnForDegrees ", false, 0, 2, Display.COLOR_BLACK, Display.FONT_NORMAL);
 
 		// run motor backward for 1.5 rotations and brake afterward
 		int degs = mot.measureDegrees();
 		int dege = 0;
 		log.fine("Motor started at " + degs + "degr.");
-		mot.motorOnForRotationsDegrees(-75, 1, 180, true);
+		if (useFloat) {
+			mot.motorOnForRotationsDegrees(-75.0F, 1, 180, true);
+		} else {
+			mot.motorOnForRotationsDegrees(-75, 1, 180, true);
+		}
 		dege = mot.measureDegrees();
 		log.fine("Motor stopped at " + dege + "degr.: Rotated: " + (dege - degs) + "degr.");
 
@@ -166,7 +202,11 @@ class MotorUtil {
 		// run motor forward for 1.5 rotations and brake afterward
 		degs = mot.measureDegrees();
 		log.fine("Motor started at " + degs + "degr.");
-		mot.motorOnForRotationsDegrees(75, 1, 180, true);
+		if (useFloat) {
+			mot.motorOnForRotationsDegrees(75.0F, 1, 180, true);
+		} else {
+			mot.motorOnForRotationsDegrees(75, 1, 180, true);
+		}
 		dege = mot.measureDegrees();
 		log.fine("Motor stopped at " + dege + "degr.: Rotated: " + (dege - degs) + "degr.");
 

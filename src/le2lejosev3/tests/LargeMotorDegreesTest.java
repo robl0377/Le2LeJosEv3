@@ -23,7 +23,7 @@ public class LargeMotorDegreesTest {
 	private static Class<?> clazz = LargeMotorDegreesTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port[] motorPorts = new Port[] { MotorPort.A, MotorPort.D };
+	static final Port[] motorPorts = new Port[] { MotorPort.B, MotorPort.C };
 
 	/**
 	 * Main program entry point.
@@ -41,7 +41,8 @@ public class LargeMotorDegreesTest {
 			LargeMotor mot = new LargeMotor(motorPort);
 			log.info("Created Large IMotor at Port " + mot.getPortName());
 			// test the motor
-			MotorUtil.motorDegreesTest("Large", mot);
+			MotorUtil.motorDegreesTest("Large", mot, false);
+			MotorUtil.motorDegreesTest("Large", mot, true);
 		}
 
 		log.info("The End");

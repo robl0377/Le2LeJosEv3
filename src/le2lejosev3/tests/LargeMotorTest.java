@@ -22,7 +22,7 @@ public class LargeMotorTest {
 	private static Class<?> clazz = LargeMotorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port[] motorPorts = new Port[] { MotorPort.A, MotorPort.D };
+	static final Port[] motorPorts = new Port[] { MotorPort.B, MotorPort.C };
 
 	/**
 	 * Main program entry point.
@@ -40,7 +40,8 @@ public class LargeMotorTest {
 			LargeMotor mot = new LargeMotor(motorPort);
 			log.info("Created Large IMotor at Port " + mot.getPortName());
 			// test the motor
-			MotorUtil.motorTest("Large", mot);
+			MotorUtil.motorTest("Large", mot, false);
+			MotorUtil.motorTest("Large", mot, true);
 		}
 
 		log.info("The End");

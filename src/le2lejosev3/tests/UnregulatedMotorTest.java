@@ -22,7 +22,7 @@ public class UnregulatedMotorTest {
 	private static Class<?> clazz = UnregulatedMotorTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port[] motorPorts = new Port[] { MotorPort.A, MotorPort.D };
+	static final Port[] motorPorts = new Port[] { MotorPort.B, MotorPort.C };
 
 	/**
 	 * Main program entry point.
@@ -39,7 +39,8 @@ public class UnregulatedMotorTest {
 			// instantiate the motor
 			UnregulatedMotor mot = new UnregulatedMotor(motorPort);
 			log.fine("Created Unregulated IMotor at Port " + mot.getPortName());
-			MotorUtil.motorTest("Unreg.", mot);
+			MotorUtil.motorTest("Unreg.", mot, false);
+			MotorUtil.motorTest("Unreg.", mot, true);
 		}
 		log.fine("The End");
 	}

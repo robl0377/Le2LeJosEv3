@@ -23,8 +23,8 @@ public class MoveTankDegreesTest {
 	private static Class<?> clazz = MoveTankDegreesTest.class;
 	private static final Logger log = Logger.getLogger(clazz.getName());
 
-	static final Port leftMotorPort = MotorPort.A;
-	static final Port rightMotorPort = MotorPort.D;
+	static final Port leftMotorPort = MotorPort.B;
+	static final Port rightMotorPort = MotorPort.C;
 
 	/**
 	 * Main program entry point.
