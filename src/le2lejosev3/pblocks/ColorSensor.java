@@ -88,7 +88,7 @@ public class ColorSensor {
 	}
 
 	/**
-	 * Fetch and return the reflected light intensity from the sensor.
+	 * Fetch and return the reflected light intensity from the sensor (as int value).
 	 * 
 	 * @return the reflected light intensity (0..100).
 	 */
@@ -101,7 +101,20 @@ public class ColorSensor {
 	}
 
 	/**
-	 * Fetch and return the ambient light intensity from the sensor.
+	 * Fetch and return the reflected light intensity from the sensor (as float value).
+	 * 
+	 * @return the reflected light intensity (0..100).
+	 */
+	public float measureReflectedLightIntensityF() {
+		// switch to reflected light intensity mode
+		sp = sensor.getRedMode();
+		sample = new float[sp.sampleSize()];
+		sp.fetchSample(sample, 0);
+		return sample[0] * 100F;
+	}
+
+	/**
+	 * Fetch and return the ambient light intensity from the sensor (as int value).
 	 * 
 	 * @return the ambient light intensity (0..100).
 	 */
@@ -113,4 +126,16 @@ public class ColorSensor {
 		return Math.round(sample[0] * 100F);
 	}
 
+	/**
+	 * Fetch and return the ambient light intensity from the sensor (as float value).
+	 * 
+	 * @return the ambient light intensity (0..100).
+	 */
+	public float measureAmbientLightIntensityF() {
+		// switch to ambient light intensity mode
+		sp = sensor.getAmbientMode();
+		sample = new float[sp.sampleSize()];
+		sp.fetchSample(sample, 0);
+		return sample[0] * 100F;
+	}
 }
