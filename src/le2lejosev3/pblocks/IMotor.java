@@ -58,7 +58,9 @@ public interface IMotor extends IMotorRotation {
 	 * let motor run the specified number of degrees.
 	 * 
 	 * @param power   set power percentage (0..100); + forward; - backward.
-	 * @param degrees number of degrees (> 0).
+	 * @param degrees number of degrees; it seems that the LEGO Programming
+	 *                block also accepts a negative number of degrees for
+	 *                backward movement.
 	 * @param brake   set true to brake at the end of movement; set false to remove
 	 *                power but do not brake.
 	 */
@@ -68,7 +70,9 @@ public interface IMotor extends IMotorRotation {
 	 * let motor run the specified number of degrees.
 	 * 
 	 * @param power   set power percentage (0..100); + forward; - backward.
-	 * @param degrees number of degrees (> 0).
+	 * @param degrees number of degrees; it seems that the LEGO Programming
+	 *                block also accepts a negative number of degrees for
+	 *                backward movement.
 	 * @param brake   set true to brake at the end of movement; set false to remove
 	 *                power but do not brake.
 	 */
@@ -125,11 +129,13 @@ public interface IMotor extends IMotorRotation {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
@@ -138,11 +144,13 @@ public interface IMotor extends IMotorRotation {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
@@ -151,11 +159,13 @@ public interface IMotor extends IMotorRotation {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
@@ -164,11 +174,13 @@ public interface IMotor extends IMotorRotation {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */

@@ -158,7 +158,9 @@ public class UnregulatedMotor implements IMotor {
 	 * let motor run the specified number of degrees.
 	 * 
 	 * @param power   set power percentage (0..100); + forward; - backward.
-	 * @param degrees number of degrees (> 0).
+	 * @param degrees number of degrees; it seems that the LEGO Programming
+	 *                block also accepts a negative number of degrees for
+	 *                backward movement.
 	 * @param brake   set true to brake at the end of movement; set false to remove
 	 *                power but do not brake.
 	 */
@@ -171,7 +173,9 @@ public class UnregulatedMotor implements IMotor {
 	 * let motor run the specified number of degrees.
 	 * 
 	 * @param power   set power percentage (0..100); + forward; - backward.
-	 * @param degrees number of degrees (> 0).
+	 * @param degrees number of degrees; it seems that the LEGO Programming
+	 *                block also accepts a negative number of degrees for
+	 *                backward movement.
 	 * @param brake   set true to brake at the end of movement; set false to remove
 	 *                power but do not brake.
 	 */
@@ -192,7 +196,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(int power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(power, (float)rotations, 0, brake);
+		motorOnForRotationsDegrees(power, (float) rotations, 0, brake);
 	}
 
 	/**
@@ -207,7 +211,7 @@ public class UnregulatedMotor implements IMotor {
 	 */
 	@Override
 	public void motorOnForRotations(float power, int rotations, boolean brake) {
-		motorOnForRotationsDegrees(Math.round(power), (float)rotations, 0, brake);
+		motorOnForRotationsDegrees(Math.round(power), (float) rotations, 0, brake);
 	}
 
 	/**
@@ -243,62 +247,68 @@ public class UnregulatedMotor implements IMotor {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(int power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, (float)rotations, degrees, brake);
+		motorOnForRotationsDegrees(power, (float) rotations, degrees, brake);
 	}
 
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(float power, int rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(Math.round(power), (float)rotations, degrees, brake);
+		motorOnForRotationsDegrees(Math.round(power), (float) rotations, degrees, brake);
 	}
 
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(int power, float rotations, int degrees, boolean brake) {
-		if (rotations < 0) {
+		// calculate the degrees to turn
+		int degrs = Math.round(rotations * 360F) + degrees;
+		if (degrs < 0) {
 			// set reverse power and positive rotations
 			power = -Math.abs(power);
-			rotations = Math.abs(rotations);
+			degrs = Math.abs(degrs);
 		}
-		if ((rotations > 0) || (degrees > 0)) {
+		if (degrs > 0) {
 			// setup motor power
 			motor.setPower(power);
 			// get start tacho count of the motor
 			int mstc = motor.getTachoCount();
 			// and the current timestamp
 			long mstct = System.currentTimeMillis();
-			// calculate the degrees to turn
-			int degrs = Math.round(rotations * 360F) + degrees;
 			if (log.isLoggable(Level.FINEST)) {
 				log.log(Level.FINEST, "rotate {0} deg.", degrs);
 			}
@@ -368,17 +378,19 @@ public class UnregulatedMotor implements IMotor {
 	/**
 	 * let motor run the specified number of rotations and degrees.
 	 * 
+	 * the total degrees to turn the motor is (rotations * 360) + degrees.
+	 * it seems that the LEGO Programming block also accepts a negative number of
+	 * total degrees for backward movement
+	 * 
 	 * @param power     set power percentage (0..100); + forward; - backward.
-	 * @param rotations number of rotations; it seems that the LEGO Programming
-	 *                  block also accepts a negative number of rotations for
-	 *                  backward movement.
-	 * @param degrees   number of degrees (> 0).
+	 * @param rotations number of rotations.
+	 * @param degrees   number of degrees.
 	 * @param brake     set true to brake at the end of movement; set false to
 	 *                  remove power but do not brake.
 	 */
 	@Override
 	public void motorOnForRotationsDegrees(float power, float rotations, int degrees, boolean brake) {
-		motorOnForRotationsDegrees(power, rotations, degrees, brake);
+		motorOnForRotationsDegrees(Math.round(power), rotations, degrees, brake);
 	}
 
 	/**
@@ -473,6 +485,7 @@ public class UnregulatedMotor implements IMotor {
 	protected void start(int power) {
 		motor.forward();
 	}
+
 	/**
 	 * start the motor.
 	 * 
