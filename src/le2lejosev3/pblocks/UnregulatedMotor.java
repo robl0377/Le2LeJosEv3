@@ -7,7 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lejos.hardware.Button;
+import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.port.Port;
+import lejos.utility.Delay;
 
 /**
  * Unregulated Motor and Motor Rotation Blocks.
@@ -27,6 +29,14 @@ public class UnregulatedMotor implements IMotor {
 
 	// motor blocking timeout in degrees or rotations mode
 	protected static final int BLOCK_TIMEOUT = 500;
+
+	// medium motor flag
+	// (used for measureCurrentPower() only)
+	protected boolean isMediumMotor = false;
+
+	// assumed maximal speed of a EV3 large motor at max. voltage
+	// (used for measureCurrentPower() only)
+	protected float MAX_SPEED_AT_9V = 175 * 360 / 60;
 
 	/**
 	 * Constructor.
@@ -52,8 +62,12 @@ public class UnregulatedMotor implements IMotor {
 	/**
 	 * stop the motor and wait until done, then close resources and remove the
 	 * reference to the motor instance.
+	 * Note1: this will automatically run at a program's end.
+	 * Note2: close an existing motor class before creating a new motor class on the
+	 * same motor port; for example: close a regulated motor before creating an
+	 * unregulated one on the same port.
 	 */
-	protected void close() {
+	public void close() {
 		if (motor != null) {
 			// stop the motor and wait until done
 			motor.stop();
@@ -84,6 +98,23 @@ public class UnregulatedMotor implements IMotor {
 	@Override
 	public String getPortName() {
 		return (this.motorPort != null) ? this.motorPort.getName() : null;
+	}
+
+	/**
+	 * set the EV3 motor type.
+	 * 
+	 * @param isMediumMotor set true for MediumMotor; set false for LargeMotor.
+	 */
+	public void setMediumMotor(boolean isMediumMotor) {
+		this.isMediumMotor = isMediumMotor;
+		MAX_SPEED_AT_9V = (isMediumMotor ? 260 * 360 / 60 : 175 * 360 / 60);
+	}
+
+	/**
+	 * @return the EV3 motor type: true for MediumMotor, false for LargeMotor.
+	 */
+	public boolean isMediumMotor() {
+		return isMediumMotor;
 	}
 
 	/**
@@ -440,16 +471,46 @@ public class UnregulatedMotor implements IMotor {
 
 	/**
 	 * Motor Rotation Block: measure the current power level of the motor.
+	 * calculates a power level that corresponds to the current speed.
 	 * 
-	 * @return the current power level.
+	 * @return the current power level 0..100.
 	 */
 	@Override
 	public float measureCurrentPower() {
-		return getPower();
+		return 100F * measureRotationSpeed() / getMaxRotationSpeed();
 	}
 
 	/**
-	 * get current power level.
+	 * measure current rotation speed.
+	 * 
+	 * @return the rotation speed in degrees / second.
+	 */
+	protected float measureRotationSpeed() {
+		// measure the degrees per 100ms
+		int dif = 0;
+		int sdeg = motor.getTachoCount();
+		// wait about 100ms
+		Delay.msDelay(99L);
+		dif = Math.abs(motor.getTachoCount() - sdeg);
+		return 10F * dif;
+	}
+
+	/**
+	 * get maximum speed.
+	 * (similar to the BaseRegulatedMotor getMaxSpeed method)
+	 * 
+	 * @return the maximum rotation speed in degrees / second.
+	 */
+	protected float getMaxRotationSpeed() {
+		// It is generally assumed, that the maximum accurate speed of an EV3 Motor is
+		// 100 degree/second * Voltage. We generalise this to other LEGO motors by
+		// returning a value
+		// that is based on 90% of the maximum free running speed of the motor.
+		return LocalEV3.ev3.getPower().getVoltage() * MAX_SPEED_AT_9V / 9.0f * 0.9f;
+	}
+
+	/**
+	 * get currently set power level.
 	 * 
 	 * @return the power 0..100.
 	 */

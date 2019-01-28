@@ -194,4 +194,13 @@ public interface IMotor extends IMotorRotation {
 	 */
 	public void motorOff(boolean brake);
 
+	/**
+	 * stop the motor and wait until done, then close resources and remove the
+	 * reference to the motor instance.
+	 * Note1: this will automatically run at a program's end.
+	 * Note2: close an existing motor class before creating a new motor class on the
+	 * same motor port; for example: close a regulated motor before creating an
+	 * unregulated one on the same port.
+	 */
+	public void close();
 }

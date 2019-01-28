@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import lejos.hardware.port.Port;
+import lejos.utility.Delay;
 
 /**
  * Regulated Motor and Motor Rotation Blocks.
@@ -50,8 +51,12 @@ class RegulatedMotor implements IMotor {
 	/**
 	 * stop the motor and wait until done, then close resources and remove the
 	 * reference to the motor instance.
+	 * Note1: this will automatically run at a program's end.
+	 * Note2: close an existing motor class before creating a new motor class on the
+	 * same motor port; for example: close a regulated motor before creating an
+	 * unregulated one on the same port.
 	 */
-	protected void close() {
+	public void close() {
 		if (motor != null) {
 			// stop the motor and wait until done
 			motor.stop();
@@ -104,28 +109,6 @@ class RegulatedMotor implements IMotor {
 	@Override
 	public void motorOn(float power) {
 		// setup motor and start it
-		setPower(power);
-		start(power);
-	}
-
-	/**
-	 * let motor run indefinitely unregulated and return immediately.
-	 * 
-	 * @param power set power percentage (0..100); + forward; - backward.
-	 */
-	public void unregulatedOn(int power) {
-		// TODO implement unregulated motor on somehow
-		setPower(power);
-		start(power);
-	}
-
-	/**
-	 * let motor run indefinitely unregulated and return immediately.
-	 * 
-	 * @param power set power percentage (0..100); + forward; - backward.
-	 */
-	public void unregulatedOn(float power) {
-		// TODO implement unregulated motor on somehow
 		setPower(power);
 		start(power);
 	}
@@ -475,16 +458,59 @@ class RegulatedMotor implements IMotor {
 
 	/**
 	 * Motor Rotation Block: measure the current power level of the motor.
+	 * calculates a power level that corresponds to the current speed.
 	 * 
-	 * @return the current power level.
+	 * @return the current power level 0..100.
 	 */
 	@Override
 	public float measureCurrentPower() {
-		return getPower();
+		return 100F * measureRotationSpeed() / motor.getMaxSpeed();
 	}
 
 	/**
-	 * get current power level.
+	 * measure current rotation speed.
+	 * 
+	 * @return the rotation speed in degrees / second.
+	 */
+	protected float measureRotationSpeed() {
+		// measure the degrees per 100ms
+		int dif = 0;
+		int sdeg = motor.getTachoCount();
+		// wait about 100ms
+		Delay.msDelay(99L);
+		dif = Math.abs(motor.getTachoCount() - sdeg);
+		return 10F * dif;
+	}
+
+	/**
+	 * get current rotation speed from regulator.
+	 *  
+	 * @return the rotation speed in degrees / second.
+	 */
+	protected float getRegulatorRotationSpeed() {
+		return motor.getRotationSpeed();
+	}
+
+	/**
+	 * get current rotation speed from motor.
+	 *  
+	 * @return the rotation speed in degrees / second.
+	 */
+	protected float getMotorRotationSpeed() {
+		return motor.getSpeed();
+	}
+
+	/**
+	 * get motor maximum rotation speed.
+	 *  
+	 * @return the rotation speed in degrees / second.
+	 */
+	protected float getMaxRotationSpeed() {
+		return motor.getMaxSpeed();
+	}
+
+	/**
+	 * get currently set power level.
 	 * calculates a power level that corresponds to the current speed.
 	 * 
 	 * @return the power 0..100.
