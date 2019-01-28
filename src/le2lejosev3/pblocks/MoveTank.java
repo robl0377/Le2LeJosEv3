@@ -39,6 +39,15 @@ public class MoveTank extends MoveBase implements IMoveTank {
 	}
 
 	/**
+	 * create a new MoveSteering instance with the motors of this instance.
+	 * 
+	 * @return a new MoveSteering instance.
+	 */
+	public MoveSteering createMoveSteering() {
+		return new MoveSteering(super.getLeftMotor(), super.getRightMotor());
+	}
+
+	/**
 	 * let left and right motors run indefinitely and return immediately.
 	 * 
 	 * @param powerLeft  set power percentage (0..100); + forward; - backward.

@@ -42,6 +42,15 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated implements IMov
 	}
 
 	/**
+	 * create a new MoveTankUnregulated instance with the unregulated motors of this instance.
+	 * 
+	 * @return a new MoveTankUnregulated instance.
+	 */
+	public MoveTankUnregulated createMoveTank() {
+		return new MoveTankUnregulated(super.getLeftMotor(), super.getRightMotor());
+	}
+
+	/**
 	 * let left and right motors run indefinitely and return immediately.
 	 * 
 	 * @param steering set amount of steering (0..100); + for right; - for left; 100
