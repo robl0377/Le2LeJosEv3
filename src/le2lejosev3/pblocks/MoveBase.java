@@ -55,6 +55,27 @@ public class MoveBase implements IMoveRotation {
 	}
 
 	/**
+	 * stop the motors and wait until done, then close resources and remove the
+	 * reference to the motor instances.
+	 * Note1: this will automatically run at a program's end.
+	 * Note2: close an existing move class before creating a new move class on the
+	 * same motor ports; for example: close a regulated move before creating an
+	 * unregulated one on the same ports.
+	 */
+	public void close() {
+		if (leftMotor != null) {
+			// close the motor and wait until done
+			leftMotor.close();
+			leftMotor = null;
+		}
+		if (rightMotor != null) {
+			// close the motor and wait until done
+			rightMotor.close();
+			rightMotor = null;
+		}
+	}
+
+	/**
 	 * @return the leftMotor
 	 */
 	public LargeMotor getLeftMotor() {

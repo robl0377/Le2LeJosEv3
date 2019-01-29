@@ -543,7 +543,7 @@ public class MoveSteeringUnregulated extends MoveBaseUnregulated implements IMov
 	 * @retrun array of 2 int: powerLeft and powerRight.
 	 */
 	protected int[] calcPower(int steering, int power) {
-		return calcPower(steering, power);
+		return calcPower((float)steering, power);
 	}
 
 	/**
