@@ -43,7 +43,18 @@ public class MathSpeedTest {
 		for (int i = 0; i < fArry.length; i++) {
 			fArry[i] = (float) dArry[i];
 		}
-		long ts, td, tf;
+		// convert the numbers to long
+		long[] lArry = new long[numbersCount];
+		for (int i = 0; i < lArry.length; i++) {
+			lArry[i] = Math.round(dArry[i]);
+		}
+		// convert the numbers to int
+		int[] iArry = new int[numbersCount];
+		for (int i = 0; i < iArry.length; i++) {
+			iArry[i] = (int)(lArry[i]);
+		}
+
+		long ts, td, tf, tl, ti;
 		// start timer
 		ts = System.currentTimeMillis();
 		// run double calculations
@@ -54,10 +65,20 @@ public class MathSpeedTest {
 		fCalc(fArry);
 		// store time
 		tf = System.currentTimeMillis();
+		// run long calculations
+		lCalc(lArry);
+		// store time
+		tl = System.currentTimeMillis();
+		// run int calculations
+		iCalc(iArry);
+		// store time
+		ti = System.currentTimeMillis();
 
 		// write the result
 		log.info("double: " + (td - ts) + "ms");
 		log.info("float : " + (tf - td) + "ms");
+		log.info("long  : " + (tl - tf) + "ms");
+		log.info("int   : " + (ti - tl) + "ms");
 
 		log.fine("The End");
 	}
@@ -102,6 +123,58 @@ public class MathSpeedTest {
 		float div = 0.0f;
 		for (int i = 0; i < fArry.length; i++) {
 			val = fArry[i];
+			// add all
+			add += val;
+			// subtract all
+			sub -= val;
+			// multiply all
+			mul *= val;
+			// divide all
+			div /= val;
+		}
+		return add + sub + mul + div;
+	}
+
+	/**
+	 * Run long calculations.
+	 * 
+	 * @param lArry the data array.
+	 * @return the result.
+	 */
+	private static long lCalc(long[] lArry) {
+		long val = 0L;
+		long add = 0L;
+		long sub = 0L;
+		long mul = 0L;
+		long div = 0L;
+		for (int i = 0; i < lArry.length; i++) {
+			val = lArry[i];
+			// add all
+			add += val;
+			// subtract all
+			sub -= val;
+			// multiply all
+			mul *= val;
+			// divide all
+			div /= val;
+		}
+		return add + sub + mul + div;
+	}
+
+	/**
+	 * Run int calculations.
+	 * 
+	 * @param iArry the data array.
+	 * @return the result.
+	 */
+	private static int iCalc(int[] iArry) {
+		int val = 0;
+		int add = 0;
+		int sub = 0;
+		int mul = 0;
+		int div = 0;
+		for (int i = 0; i < iArry.length; i++) {
+			val = iArry[i];
 			// add all
 			add += val;
 			// subtract all
